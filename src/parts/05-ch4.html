@@ -1,0 +1,72 @@
+<!-- meta: id=ch-04 | grp=第二篇 · 清结算与账户 | label=第4章 · 清算·结算·轧差 -->
+<section class="chapter" id="ch-04">
+  <div class="ch-head">
+    <div class="ch-num">PART 2 · CH 4</div>
+    <h1>清算 · 结算 · 轧差</h1>
+    <p class="lede">这一章回答全书最容易混的四个词：清算、结算、轧差、划拨。它们不是同义词，而是同一晚上的四个阶段。</p>
+    <span class="part-tag">第二篇 · 清结算与账户</span>
+  </div>
+
+  <h2>4.1 四个词，一张图</h2>
+  <div class="fig-wrap">
+    <!--FIG:c4_four_words-->
+    <div class="fig-cap"><b>图 4-1 · 清算 → 轧差 → 结算 → 划拨</b>清算和轧差是「算账」，结算是「确认该付多少」，划拨才是「钱真的动了」。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q"><span class="mark">Q1</span>清算就是轧差吗？结算就是划拨吗？</div>
+    <div class="a">
+      <p><strong>清算 ≠ 轧差。</strong>清算是整个「算账」过程：收单方把交易明细交给清算机构，清算机构对账、按参与方归类汇总。<strong>轧差只是清算中常用的一种计算技巧</strong>（多边互抵成净额），也可以不轧差逐笔清算（大额实时系统就是逐笔全额）。</p>
+      <p><strong>结算 ≠ 划拨。</strong>结算是「确定债务」：清算结果生效，产生不可撤销的付款义务。<strong>划拨才是资金的物理转移</strong>（银行准备金账户间真实动钱）。结算完不等于钱到了 —— 划拨可能因头寸不足延后。</p>
+      <p><strong>类比：</strong>聚餐 AA 制。清算=把账单按人头算清；轧差=你欠我 30、我欠你 50，抵掉后你只给我 20；结算=大家确认「就这么付」；划拨=微信转账真到账。</p>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q"><span class="mark">Q2</span>清算的主体是清算机构，那支付机构要调用清算机构的「发起清算」接口吗？</div>
+    <div class="a">
+      <p><strong>不需要主动调「发起清算」接口。</strong>支付机构与清算机构（网联/银联）之间是<strong>报文协议</strong>关系，不是 REST 接口关系：</p>
+      <p>① 交易时段：支付机构实时发送<strong>支付转接报文</strong>（借记/贷记），这是业务指令不是清算指令；<br>
+      ② 日终：网联/银联<strong>主动</strong>生成轧差结果和清算文件下发；<br>
+      ③ 支付机构做的只是：对账、确认、差错处理。</p>
+      <p>换句话说：清算的「触发」是日切（自动的），不是谁去调接口。你在微信/支付宝开放平台文档里找不到任何「发起清算」接口 —— 因为它根本不对参与者开放。</p>
+    </div>
+  </div>
+
+  <h2>4.2 轧差：为什么不用一笔笔转</h2>
+  <div class="fig-wrap">
+    <!--FIG:c4_netting-->
+    <div class="fig-cap"><b>图 4-2 · 轧差计算实例</b>6 笔互转轧差后只需 2 笔净额划款 —— 银行间每天几十亿笔交易，全靠这个技巧才能高效清算。</div>
+  </div>
+  <div class="example">
+    <span class="t">例 · 生活版轧差</span>
+    <p>四个人拼单买菜：A 垫了 400、B 垫了 300、C 垫了 200、D 没垫。逐笔结算是 6 次转账；先各自算净额（A 应收 X、D 应付 Y），最后 2-3 次转账搞定。微信群里的「AA 收款合并」就是这个逻辑。</p>
+  </div>
+
+  <h2>4.3 日终轧差清算的完整时序</h2>
+  <p>这是用户和大多数工程师都看不到的部分：</p>
+  <div class="fig-wrap">
+    <!--FIG:c4_dayend_seq-->
+    <div class="fig-cap"><b>图 4-3 · T+1 日终资金划拨全时序</b>日切 → 清算指令 → 央行划拨 → 备付金入账 → 商户余额记账。金线=资金真实流动。</div>
+  </div>
+
+  <h2>4.4 清算文件是怎么送到你手上的</h2>
+  <p>很多人以为清算机构会「推送」文件，其实一段都不是 —— <strong>三段链路全部是「文件 + 拉取」</strong>：</p>
+  <div class="fig-wrap">
+    <!--FIG:c4_file_delivery-->
+    <div class="fig-cap"><b>图 4-4 · 清算 / 对账文件的三段传输链路</b>银联走专线 + SFTP（路径 = 机构标识码/清算日期，23:00 日切，先传 .temp 再改名防止半成品）；微信 / 支付宝走 HTTP API（先拿 5 分钟有效的 download_url 再下载）；银行走银企直连或网银导出。</div>
+  </div>
+  <div class="card">
+    <h3>工程上要注意的三件事</h3>
+    <ul>
+      <li><strong>拉取时机：</strong>微信次日 9 点开始生成前一天账单，10 点前拉会报 <code>STATEMENT_CREATING</code> —— 定时任务别排在 8 点。</li>
+      <li><strong>下载链接短时效：</strong>微信 <code>download_url</code> 只有 5 分钟有效，拿到必须立刻下载；下载后还要用接口返回的 SHA1 校验文件完整性。</li>
+      <li><strong>半成品防护：</strong>银联用「先传 .temp 再改名」解决这个问题；你自己落库时也应该用「先写临时表 / 先落文件再改状态」，避免把解析了一半的账单当成完整账单去核对。</li>
+    </ul>
+  </div>
+
+  <div class="ch-nav">
+    <a href="#ch-03" onclick="goChapter('ch-03')">← 第 3 章</a>
+    <a href="#ch-05" onclick="goChapter('ch-05')">第 5 章 · 日切·单边账·账户体系 →</a>
+  </div>
+</section>

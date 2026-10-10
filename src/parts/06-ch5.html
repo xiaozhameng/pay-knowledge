@@ -1,0 +1,44 @@
+<!-- meta: id=ch-05 | grp=第二篇 · 清结算与账户 | label=第5章 · 日切·单边账·账户体系 -->
+<section class="chapter" id="ch-05">
+  <div class="ch-head">
+    <div class="ch-num">PART 2 · CH 5</div>
+    <h1>日切 · 单边账 · 账户体系</h1>
+    <p class="lede">清算系统每天要「切一刀」，你的系统也一样要对账。这一章讲跨零点订单的归属、单边账的成因，以及商户号里两种余额的真正含义。</p>
+    <span class="part-tag">第二篇 · 清结算与账户</span>
+  </div>
+
+  <h2>5.1 日切：跨零点订单算哪一天</h2>
+  <div class="fig-wrap">
+    <!--FIG:c5_daycut-->
+    <div class="fig-cap"><b>图 5-1 · 日切与订单归属</b>渠道侧的「支付日期」决定清算批次，不是你系统的下单时间。</div>
+  </div>
+  <div class="example">
+    <span class="t">例 · 单边账的经典现场</span>
+    <p>小赵 23:58 付款 30 元。你的订单表记录「10月10日」，但微信账单把这笔放进「10月11日」批次。如果你按自己的日期去拉对账文件，这笔订单就成了「我有他没有」的短款 —— 其实钱没问题，只是批次切走了。<strong>解法：对账永远以渠道账单为准绳。</strong></p>
+  </div>
+
+  <h2>5.2 单边账：渠道与我方状态不一致</h2>
+  <p class="term"><span class="w">短款</span><span class="d">我方有记录、渠道没有 —— 常见于用户点了支付但渠道侧失败/超时，或掉单。</span></p>
+  <p class="term"><span class="w">长款</span><span class="d">渠道有记录、我方没有 —— 常见于回调丢失、我方落库失败但钱已扣。</span></p>
+  <table>
+    <colgroup><col style="width:14%"><col style="width:30%"><col style="width:28%"><col style="width:28%"></colgroup>
+    <tr><th>类型</th><th>成因</th><th>风险</th><th>修复</th></tr>
+    <tr><td><b>我方成功/渠道失败</b></td><td>调渠道超时但实际失败</td><td>误发货 → 资损</td><td>补偿查单 + 超时关单</td></tr>
+    <tr><td><b>渠道成功/我方失败</b></td><td>回调丢失/落库失败</td><td>用户付了钱订单未支付 → 投诉</td><td>定时查单补偿 + 对账补单</td></tr>
+  </table>
+
+  <h2>5.3 商户号内部账户体系</h2>
+  <div class="fig-wrap">
+    <!--FIG:c5_accounts-->
+    <div class="fig-cap"><b>图 5-2 · 商户号的两种余额</b>「可用余额」与「待结算余额」的法律性质不同：前者可提现，后者还在清算途中。</div>
+  </div>
+  <div class="example">
+    <span class="t">例 · 为什么 T+1 而不是实时</span>
+    <p>商户号之所以有「待结算余额」，是因为渠道要先确认清算（银行的钱真的到了）才敢给你「可提现」的记账。实时到账的「秒到」产品其实是收单机构<strong>垫资</strong>：先把自己的钱给你，T+1 再向渠道清算收回。</p>
+  </div>
+
+  <div class="ch-nav">
+    <a href="#ch-04" onclick="goChapter('ch-04')">← 第 4 章</a>
+    <a href="#ch-06" onclick="goChapter('ch-06')">第 6 章 · 渠道详解：微信支付 V3 →</a>
+  </div>
+</section>

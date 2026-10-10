@@ -1,0 +1,47 @@
+<!-- meta: id=ch-07 | grp=第三篇 · 渠道详解 | label=第7章 · 渠道详解：支付宝开放平台 -->
+<section class="chapter" id="ch-07">
+  <div class="ch-head">
+    <div class="ch-num">PART 3 · CH 7</div>
+    <h1>渠道详解：支付宝开放平台</h1>
+    <p class="lede">支付宝与微信覆盖了国内 95% 以上的线上支付。两者业务能力等价，但接口风格差异巨大 —— 中台渠道子系统的价值就是把这种差异吸收掉。</p>
+    <span class="part-tag">第三篇 · 渠道详解</span>
+  </div>
+
+  <h2>7.1 核心接口模型</h2>
+  <table>
+    <colgroup><col style="width:34%"><col style="width:38%"><col style="width:28%"></colgroup>
+    <tr><th>接口</th><th>用途</th><th>关键点</th></tr>
+    <tr><td><code>alipay.trade.create</code></td><td>统一收单下单（商户代扣/小程序）</td><td>返回 trade_no</td></tr>
+    <tr><td><code>alipay.trade.wap.pay</code></td><td>H5 支付，跳转支付宝</td><td>表单跳转</td></tr>
+    <tr><td><code>alipay.trade.page.pay</code></td><td>PC 网站支付</td><td>跳转收银台</td></tr>
+    <tr><td><code>alipay.trade.query</code></td><td>查单</td><td>终态确认</td></tr>
+    <tr><td><code>alipay.trade.refund</code></td><td>退款（同步返回结果）</td><td>与微信异步不同</td></tr>
+    <tr><td><code>alipay.fund.trans.unier.transfer</code></td><td>转账（打款给用户支付宝）</td><td>营销返现等场景</td></tr>
+  </table>
+
+  <h2>7.2 与微信 V3 的关键差异</h2>
+  <div class="fig-wrap">
+    <!--FIG:d7_wx_vs_ali-->
+    <div class="fig-cap"><b>图 7-1 · 微信 vs 支付宝关键差异</b>最容易被坑的三处：金额单位（分 vs 元字符串）、退款（异步 vs 同步）、回调（加密报文 vs 明文表单+验签）。</div>
+  </div>
+  <div class="callout warn">
+    <span class="t">实践提醒</span>
+    支付宝金额是「元」的字符串（<code>"30.00"</code>），直接用浮点拼接会出精度问题（如 0.1+0.2）。正确做法：内部一律用分，出口时格式化成两位小数字符串。
+  </div>
+
+  <h2>7.3 异步通知的规范</h2>
+  <ul>
+    <li>通知用 <strong>POST 表单</strong>推送，参数明文 + <code>sign</code>（RSA2 签名），需用支付宝公钥验签；</li>
+    <li>处理成功必须返回 <code>success</code> 字符串（不是 JSON）；否则支付宝按 <strong>4m→2h→...→24h</strong> 共 8 次重试；</li>
+    <li>同样要<strong>主动查单</strong>兜底 —— 重试机制只是补偿，不是保证。</li>
+  </ul>
+  <div class="example">
+    <span class="t">例 · 同一件事的两套话术</span>
+    <p>「用户付 30 元并确认到账」：微信的做法是下单拿 prepay_id → 前端拉起 → 加密回调 → 查单；支付宝的做法是拼参数跳支付宝 → 表单回调验签 → 返回 success → 查单。<strong>业务语义完全相同，工程实现天差地别</strong> —— 这正是渠道子系统存在的意义。</p>
+  </div>
+
+  <div class="ch-nav">
+    <a href="#ch-06" onclick="goChapter('ch-06')">← 第 6 章</a>
+    <a href="#ch-08" onclick="goChapter('ch-08')">第 8 章 · 银联·数字人民币·网联 →</a>
+  </div>
+</section>

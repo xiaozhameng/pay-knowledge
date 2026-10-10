@@ -1,0 +1,40 @@
+<!-- meta: id=ch-17 | grp=第七篇 · 资损治理与职业 | label=第17章 · 资损防控体系 -->
+<section class="chapter" id="ch-17">
+  <div class="ch-head">
+    <div class="ch-num">PART 7 · CH 17</div>
+    <h1>资损防控体系</h1>
+    <p class="lede">资损 = 平台比「理论值」少了一分钱。可能是 bug、可能是攻击、可能是流程漏洞。资损防控是支付架构师的终极考试。</p>
+    <span class="part-tag">第七篇 · 资损治理与职业</span>
+  </div>
+
+  <h2>17.1 资损的典型来源</h2>
+  <ul>
+    <li><strong>金额精度：</strong>浮点计算导致 0.01 元差 —— 千万笔放大后是大钱；</li>
+    <li><strong>优惠叠加：</strong>多张券叠加后金额为负 —— 用户「倒赚」；</li>
+    <li><strong>幂等缺失：</strong>回调重放导致重复加权益；</li>
+    <li><strong>并发扣减：</strong>库存/余额无锁，超卖超扣；</li>
+    <li><strong>流程漏洞：</strong>退款后不回滚分账，商家多拿钱。</li>
+  </ul>
+
+  <h2>17.2 四道防线</h2>
+  <div class="fig-wrap">
+    <!--FIG:h17_loss_defense-->
+    <div class="fig-cap"><b>图 17-1 · 资损四道防线</b>越往左成本越低：事前一次代码评审，胜过事后十次追偿。</div>
+  </div>
+
+  <h2>17.3 关键设计清单</h2>
+  <div class="card">
+    <ul>
+      <li>金额一律 <strong>整数分</strong>，禁止 float/double；</li>
+      <li>所有资金操作 <strong>可重试、可幂等、可对账</strong>；</li>
+      <li>资金等式校验内置于代码（冻结=分账+退款+回退+剩余）；</li>
+      <li>出款接口（退款/分账/提现）比入款接口<strong>多一道审核</strong>；</li>
+      <li>资损大盘：<strong>每一分钟</strong>核对资金流入流出，偏差即告警。</li>
+    </ul>
+  </div>
+
+  <div class="ch-nav">
+    <a href="#ch-16" onclick="goChapter('ch-16')">← 第 16 章</a>
+    <a href="#ch-18" onclick="goChapter('ch-18')">第 18 章 · 架构演进与职业跃迁 →</a>
+  </div>
+</section>

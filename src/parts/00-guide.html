@@ -1,0 +1,52 @@
+<!-- meta: id=ch-guide | grp=开始 | label=导读 · 这本书怎么用 -->
+<section class="chapter" id="ch-guide">
+  <div class="ch-head">
+    <div class="ch-num">GUIDE</div>
+    <h1>这本书怎么用</h1>
+    <p class="lede">它假设你是一名后端工程师，正在进入支付领域。它不罗列接口文档，而是带你建立「看见一笔钱如何安全流动」的心智模型 —— 每个概念都配真实例子，每组易混概念都给对比图。</p>
+    <span class="part-tag">学习指引</span>
+  </div>
+
+  <p class="lead">阅读方式只有一条：<strong>每个概念，先看例子，再看定义。</strong>支付领域最大的坑是「名词都认识，连起来不知道在说什么」，而解药永远是具体场景。</p>
+
+  <h2>主线案例：小赵买一杯咖啡</h2>
+  <p>全书用同一个人物（小赵）反复买咖啡。同一次购买，因为下面四个分支不同，会走出<strong>完全不同的资金路径</strong>：</p>
+  <div class="card">
+    <ul>
+      <li><strong>在哪儿买？</strong>麦当劳小程序（商家自己收钱）／抖音电商（平台担保）／便利店扫码（线下收单）—— 渠道性质决定资金是否被托管。</li>
+      <li><strong>用优惠券了吗？</strong>用了红包或券，支付金额 ≠ 商品原价，退款时要拆「退券」和「退实付」两条流程（见 <a href="#ch-faq" onclick="goChapter('ch-faq')">FAQ 章</a>）。</li>
+      <li><strong>用什么付？</strong>微信零钱（机构内部记账，不出网联）／储蓄卡（走网联→发卡行）／信用卡（走网联+发卡行授信）。</li>
+      <li><strong>钱给谁？</strong>直接到商户（即时到账）／先冻结、确认收货再分账（担保交易）。</li>
+    </ul>
+  </div>
+  <div class="fig-wrap">
+    <!--FIG:intro_case_tree-->
+    <div class="fig-cap"><b>图 0-1 · 主线案例决策树</b>四个分支的组合，决定了这笔钱走哪条路、受什么监管、何时到账。全书每个概念都挂在这棵树上讲。</div>
+  </div>
+
+  <div class="example">
+    <span class="t">例 · 同样是「买咖啡」</span>
+    <p>① 麦当劳小程序，储蓄卡付 30 元 → <strong>商家自有系统 + 即时到账</strong>：钱<strong>即时记入</strong>麦当劳的微信商户号（账本），T+1 起可提现，提现后 1~3 个工作日到对公卡 —— 「即时到账」说的是账本，「T+1」说的是提现周期，两回事（<a href="#ch-01" onclick="goChapter('ch-01')">第 1 章 1.5 节有专图</a>）。</p>
+    <p>② 抖音买咖啡豆，储蓄卡付 59 元 → <strong>平台 + 担保交易</strong>：钱先进抖音在微信的担保户，冻结到确认收货。</p>
+    <p>③ 便利店扫码买咖啡 → <strong>线下银行卡收单</strong>：走银联/网联清算，收单机构把钱结给便利店。</p>
+    <p>三个例子背后是三套完全不同的参与方、监管规则和系统链路 —— 这就是为什么「支付」是一个值得专门学半年才能上手的领域。</p>
+  </div>
+
+  <h2>三条阅读主线</h2>
+  <div class="fig-wrap">
+    <!--FIG:intro_reading_map-->
+    <div class="fig-cap"><b>图 0-2 · 阅读地图</b>资金线、信息线、治理线互相缠绕：只有同时看清三条线，才能在异常发生时判断「钱在哪、账对不对、谁该修」。</div>
+  </div>
+
+  <div class="callout arch">
+    <span class="t">本书的三个约定</span>
+    ① 所有金额用「元」举例，但代码字段一律「分」（整数），这是行业硬规范；<br>
+    ② 「央行」「人行」是同一个机构，全书统一用「央行」；<br>
+    ③ 时序图中<strong>蓝色箭头=信息流、金色箭头=资金流</strong>，任何一步资金真实划拨都会金线标出 —— 不允许「看起来像转了账，其实只是记账」的歧义。
+  </div>
+
+  <div class="ch-nav">
+    <span></span>
+    <a href="#ch-00" onclick="goChapter('ch-00')">第 0 章 · 国内支付全景 →</a>
+  </div>
+</section>

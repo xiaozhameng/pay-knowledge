@@ -1,0 +1,45 @@
+<!-- meta: id=ch-appx-quiz | grp=附录 · 工具箱 | label=附录C · 架构师自测20题 -->
+<section class="chapter" id="ch-appx-quiz">
+  <div class="ch-head">
+    <div class="ch-num">APPENDIX C</div>
+    <h1>架构师自测 20 题</h1>
+    <p class="lede">读完不等于学会。这 20 题覆盖全书骨架：先在心里作答，再点开核对。能脱口而出 16 题以上，「国内支付全貌」这关就算过了；剩下的题目指向你需要重读的章节。</p>
+    <span class="part-tag">附录 · 工具箱</span>
+  </div>
+
+  <h2>第一部分 · 概念与生态（1-7）</h2>
+  <details class="q"><summary>一笔支付里的「三流」分别是什么？为什么说它们必须分开看？</summary><div class="ans">信息流（指令）、资金流（钱）、货物流（履约）。三流各自独立推进、在关键节点互相校验 —— 例如退款判断依据是物流状态而非资金状态。见第 1 章。</div></details>
+  <details class="q"><summary>平台（抖音）和支付机构（微信支付）的本质区别是什么？平台为什么不能自己收钱？</summary><div class="ans">平台管信息（订单/售后/状态机），支付机构持牌照管资金。无《支付业务许可证》碰用户资金即违规（二清红线）。见第 0、2 章。</div></details>
+  <details class="q"><summary>「断直连」断的是什么？断完之后链路变成什么样？</summary><div class="ans">切断支付机构与银行的直接连接。之后链路为：平台 → 支付机构 → 网联/银联 → 银行 → 央行。见第 3 章。</div></details>
+  <details class="q"><summary>备付金是什么？2019 年后为什么不能给支付机构带来利息了？</summary><div class="ans">用户已付、商户未拿的钱。2019.1.14 起 100% 集中缴存央行，支付机构只记账不动钱，且集中存管不计息。见第 3 章。</div></details>
+  <details class="q"><summary>网联只对接谁？平台（如美团）能直接对接网联吗？</summary><div class="ans">网联接入方是持牌支付机构与银行。平台不是清算参与方，支付请求必经支付机构，永远不跨过它。见第 3 章。</div></details>
+  <details class="q"><summary>易宝支付和微信支付是平级机构，为什么易宝会接入微信支付？反过来为什么不成立？</summary><div class="ans">易宝是入口（有行业商户缺 C 端触达）、微信是通道（有 10 亿用户收银台）。微信自己就是入口，不会让出。通道可多条，入口只一个。见第 0 章。</div></details>
+  <details class="q"><summary>央行、人行是同一个机构吗？它身兼哪三个角色？</summary><div class="ans">是，都是中国人民银行。监管者（发牌定规则）、支付系统运营者（大小额系统）、备付金托管者。见第 8 章。</div></details>
+
+  <h2>第二部分 · 清结算与资金（8-13）</h2>
+  <details class="q"><summary>清算、结算、轧差、划拨四个词，各是什么？哪两个经常被错误地画等号？</summary><div class="ans">清算=交换明细算账；轧差=多边互抵成净额（清算中的可选技巧）；结算=确认不可撤销的付款义务；划拨=资金真实转移。常被错画等号的是「清算=轧差」和「结算=划拨」。见第 4 章。</div></details>
+  <details class="q"><summary>用户银行卡付款成功的那一秒，商户的对公银行卡里有钱吗？钱分哪三层逐步到位？</summary><div class="ans">没有。① 微信侧记账（商户号余额+N，即时）；② T+1 备付金入账（央行，资金物理到位）；③ 商户提现后才到对公卡。见 FAQ 图 F-1。</div></details>
+  <details class="q"><summary>担保交易中，用户付款到确认收货之间的 7 天，钱在哪里？有没有利息？平台何时能发起分账？</summary><div class="ans">在央行备付金账户（担保冻结态），无利息（备付金不计息且非任何一方财产）。确认收货的那一刻即可发起分账，7 天只是自动确认的兜底时限。见第 9 章、FAQ 图 F-2。</div></details>
+  <details class="q"><summary>市面上「扫码收款秒到银行卡」是怎么实现的？代价是什么？</summary><div class="ans">收单机构垫资：先用自己的钱垫付给商户，T+1 再向渠道清算收回。代价是更高费率，且机构承担了清算风险。见第 5 章、FAQ。</div></details>
+  <details class="q"><summary>用户用「100 元订单 = 平台红包 20 + 商家券 10 + 实付 70」付款，支付机构通道里走多少钱？退款时三部分各怎么处理？</summary><div class="ans">通道只走实付 70 元。退款：70 原路退回用户；红包退回平台营销账户（或按规则作废）；商家券部分退给商家。两套流程两个幂等键，绝不能把 100 全退给用户（资损）。见 FAQ 图 F-3。</div></details>
+  <details class="q"><summary>分账回退在什么场景下会失败？失败了大平台怎么兜底？</summary><div class="ans">分账接收方余额不足（已提现）时回退失败。兜底：平台自有资金先退用户保体验，再向商家追偿（扣后续结算款/保证金/法务）—— 这也是平台收保证金的原因。见第 10 章。</div></details>
+
+  <h2>第三部分 · 工程与架构（14-20）</h2>
+  <details class="q"><summary>微信回调的三个铁律是什么？为什么回调的内容不能直接信？</summary><div class="ans">验签、解密（AES-GCM）、不信内容必须查单确认终态。回调可被重放、可伪造、可能与库内状态时序颠倒，它只是「提醒」不是「事实」。见第 6 章。</div></details>
+  <details class="q"><summary>幂等的三板斧是什么？分别兜住什么风险？</summary><div class="ans">唯一索引（兜重复写入）、状态机 CAS（兜终态被回退）、分布式锁（兜并发双写）。三板斧缺一不可。见第 13 章。</div></details>
+  <details class="q"><summary>对账要核哪三本账？长款和短款各自意味着什么？</summary><div class="ans">我方流水、渠道账单、银行入账。长款=渠道有我没有（掉单方向）；短款=我有渠道没有（用户侧失败方向）。见第 5、12 章。</div></details>
+  <details class="q"><summary>跨零点付款（23:58）的订单，对账时按谁的日期算？不按这个日期会出什么事？</summary><div class="ans">按渠道侧的支付日期（决定清算批次）。按自家下单日期会对出假性短款/长款 —— 钱没问题，批次切走了。见第 5 章。</div></details>
+  <details class="q"><summary>担保交易必须守住的资损等式是什么？</summary><div class="ans">冻结金额 = 已分账 + 已退款 + 已回退 + 剩余冻结。任一时刻不成立即资损，立即告警。见第 11 章。</div></details>
+  <details class="q"><summary>支付系统为什么不用 2PC/XA 保证一致性？行业标准做法是什么？</summary><div class="ans">微信/网联/发卡行是独立系统，事务无法跨出你的机房。标准做法：本地事务 + 可靠消息（本地消息表）+ 对账兜底，最终一致。见第 13 章。</div></details>
+  <details class="q"><summary>外卡支付与国内支付最大的两个差异是什么？</summary><div class="ans">① Auth（授权冻结）与 Capture（请款扣款）分离，天然带担保属性；② 存在拒付（Chargeback）机制，风险由商户承担，拒付率超标会被终止收单资格。见第 15 章。</div></details>
+
+  <div class="callout ok">
+    <span class="t">判卷标准</span>
+    16 题以上脱口而出 → 可以上手设计支付系统了；10-15 题 → 按答错题目后的章节号回炉；10 题以下 → 从第 0 章的全景图重新出发，这次边看边画。
+  </div>
+
+  <div class="ch-nav">
+    <a href="#ch-appx-troubleshoot" onclick="goChapter('ch-appx-troubleshoot')">← 附录 B · 排查手册</a>
+    <a href="#ch-guide" onclick="goChapter('ch-guide')">回到导读 · 全书完 ↺</a>
+  </div>
+</section>

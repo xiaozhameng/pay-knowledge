@@ -1,0 +1,61 @@
+<!-- meta: id=ch-06 | grp=第三篇 · 渠道详解 | label=第6章 · 渠道详解：微信支付 V3 -->
+<section class="chapter" id="ch-06">
+  <div class="ch-head">
+    <div class="ch-num">PART 3 · CH 6</div>
+    <h1>渠道详解：微信支付 V3</h1>
+    <p class="lede">微信支付是国内接入率最高的渠道。这一章从接口模型讲到资金路径，重点是把「回调不可信」和「两种付款方式的资金差异」讲透。</p>
+    <span class="part-tag">第三篇 · 渠道详解</span>
+  </div>
+
+  <h2>6.1 V3 接口模型总览</h2>
+  <table>
+    <colgroup><col style="width:30%"><col style="width:40%"><col style="width:30%"></colgroup>
+    <tr><th>接口</th><th>用途</th><th>关键点</th></tr>
+    <tr><td><code>POST /v3/pay/transactions/jsapi</code></td><td>JSAPI（公众号/小程序内）下单</td><td>返回 prepay_id，2 小时有效</td></tr>
+    <tr><td><code>POST /v3/pay/transactions/h5</code></td><td>H5（微信外浏览器）支付</td><td>返回跳转链接</td></tr>
+    <tr><td><code>POST /v3/pay/transactions/native</code></td><td>Native 扫码支付</td><td>返回二维码 code_url</td></tr>
+    <tr><td><code>GET /v3/pay/transactions/out-trade-no/{no}</code></td><td>查单</td><td>终态确认的唯一可信来源</td></tr>
+    <tr><td><code>POST /v3/refund/domestic/refunds</code></td><td>退款</td><td>受理成功 ≠ 到账</td></tr>
+    <tr><td><code>POST /v3/profitsharing/orders</code></td><td>分账（担保交易）</td><td>接收方须预先添加白名单</td></tr>
+  </table>
+
+  <h2>6.2 完整时序：下单到回调（不省略任何角色）</h2>
+  <div class="fig-wrap">
+    <!--FIG:d6_wx_v3_seq-->
+    <div class="fig-cap"><b>图 6-1 · 微信 V3 完整时序</b>⑥⑦ 是绝大多数教程省略的网联↔发卡行交互；「回调不可信，必须查单」用风险色标出。</div>
+  </div>
+  <div class="callout risk">
+    <span class="t">回调处理的三个铁律</span>
+    ① <strong>验签</strong>：用微信平台证书验证回调签名，防伪造；<br>
+    ② <strong>解密</strong>：回调报文是 AES-256-GCM 加密的，密钥是 APIv3 密钥；<br>
+    ③ <strong>不信回调内容</strong>：回调只是「提醒」，落终态前必须调查单接口确认 —— 因为回调可被重放，且可能先于数据库状态到达。
+  </div>
+
+  <h2>6.3 两种付款方式，两条资金路径</h2>
+  <div class="fig-wrap">
+    <!--FIG:d6_money_path-->
+    <div class="fig-cap"><b>图 6-2 · 零钱 vs 银行卡的资金路径</b>零钱支付完全不出微信体系（无网联参与）；银行卡支付 T+1 才真正划拨到备付金账户。</div>
+  </div>
+  <div class="qa">
+    <div class="q"><span class="mark">Q</span>用户用银行卡支付成功后，普通商户「即时到账」，这中间涉及资金吗？还是只是记账？</div>
+    <div class="a">
+      <p><strong>那一秒只是记账。</strong>支付成功瞬间：① 小赵招行卡被扣 30 元（资金已从他那边动了）；② 微信账本记「商户号可用余额 +30」。但微信在央行的备付金账户并没有真的多 30 元 —— 那要等 T+1 清算划拨。</p>
+      <p>商家在微信商户后台看到余额增加（<strong>不是</strong>对公银行卡增加）；只有发起提现，钱才从备付金体系划到对公卡。</p>
+    </div>
+  </div>
+
+  <h2>6.4 幂等与金额单位</h2>
+  <ul>
+    <li><strong>金额单位：分</strong>。所有接口金额是整数分，<code>100</code> = 1.00 元。用浮点数是重大事故来源。</li>
+    <li><strong>幂等键：out_trade_no</strong>。同一商户号内唯一，重复下单返回同一个 prepay_id 而不会重复创建。</li>
+    <li><strong>退款幂等键：out_refund_no</strong>。部分退款可多次调，累计不超过原单金额。</li>
+  </ul>
+
+  <h2>6.5 平台收付通（担保）模式</h2>
+  <p>抖音、美团这类平台用的是微信的「合单支付 + 分账」产品（旧称收付通）：用户付款先进入平台的「待分账账户」（冻结），平台再按规则分账给二级商户。这是第 9 章担保交易的工程实现。</p>
+
+  <div class="ch-nav">
+    <a href="#ch-05" onclick="goChapter('ch-05')">← 第 5 章</a>
+    <a href="#ch-07" onclick="goChapter('ch-07')">第 7 章 · 支付宝 →</a>
+  </div>
+</section>

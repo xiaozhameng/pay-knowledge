@@ -1,0 +1,39 @@
+<!-- meta: id=ch-16 | grp=第六篇 · 跨境与风控 | label=第16章 · 风控体系 -->
+<section class="chapter" id="ch-16">
+  <div class="ch-head">
+    <div class="ch-num">PART 6 · CH 16</div>
+    <h1>风控体系</h1>
+    <p class="lede">风控的目标不是「拦住所有坏交易」，而是<b>在体验、资损、合规之间找平衡</b>。拦得太多，正常用户流失；拦得太少，盗刷薅羊毛进场。</p>
+    <span class="part-tag">第六篇 · 跨境与风控</span>
+  </div>
+
+  <h2>16.1 三层风控</h2>
+  <div class="fig-wrap">
+    <!--FIG:g16_risk_layers-->
+    <div class="fig-cap"><b>图 16-1 · 事前/事中/事后三层</b>每层有不同时延预算：事前可秒级重交互、事中必须 50ms 内决策、事后可异步处置。</div>
+  </div>
+
+  <h2>16.2 核心手段</h2>
+  <ul>
+    <li><strong>设备指纹：</strong>识别同一设备批量注册/薅羊毛；</li>
+    <li><strong>规则引擎：</strong>可配置规则（单笔限额、频率、地域、名单），热更新；</li>
+    <li><strong>模型评分：</strong>机器学习给每笔交易打风险分，按分数分流（放行/挑战/拒绝）；</li>
+    <li><strong>关系图谱：</strong>识别团伙（同一 WiFi、同一收款账户、相似行为序列）。</li>
+  </ul>
+  <div class="example">
+    <span class="t">例 · 薅羊毛的攻防</span>
+    <p>平台发「新人 20 元红包」。黑产用接码平台注册 1000 个账号 —— 风控视角：同一设备指纹、同一批 IP 段、注册时间聚集、收货地址相似。规则层直接拦截，模型层降低这些账号的后续信用分。<strong>风控的本质是把「坏用户」变得无利可图，而不是永久消灭。</strong></p>
+  </div>
+
+  <h2>16.3 架构落地</h2>
+  <ul>
+    <li>风控是<strong>旁路</strong>：主链路超时则降级放行（保可用性），事后再补查；</li>
+    <li>决策结果<strong>必须落库</strong>（谁在什么时候为什么被拒），否则无法复盘；</li>
+    <li>与支付系统的交互点：下单（准入）、支付（事中）、提现（出款拦截）。</li>
+  </ul>
+
+  <div class="ch-nav">
+    <a href="#ch-15" onclick="goChapter('ch-15')">← 第 15 章</a>
+    <a href="#ch-17" onclick="goChapter('ch-17')">第 17 章 · 资损防控体系 →</a>
+  </div>
+</section>

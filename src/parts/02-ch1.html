@@ -1,0 +1,88 @@
+<!-- meta: id=ch-01 | grp=第一篇 · 基础与监管 | label=第1章 · 支付的本质与全景 -->
+<section class="chapter" id="ch-01">
+  <div class="ch-head">
+    <div class="ch-num">PART 1 · CH 1</div>
+    <h1>支付的本质与全景</h1>
+    <p class="lede">把「支付」从一串接口调用还原成一句本质：一笔价值在不同账户之间，安全、可追溯、可审计地完成转移。这一章先建立全局视角。</p>
+    <span class="part-tag">第一篇 · 基础与监管</span>
+  </div>
+
+  <h2>1.1 支付的本质：三流合一</h2>
+  <p class="term"><span class="w">定义</span><span class="d"><strong>支付 = 信息流（指令）+ 资金流（钱）+ 货物流（履约）三者的协同。</strong>信息流告诉系统「该转多少钱」，资金流是钱真实移动，货物流是履约闭环。任何一条流断了，支付就「账不对」。</span></p>
+  <div class="fig-wrap">
+    <!--FIG:b1_three_flows-->
+    <div class="fig-cap"><b>图 1-1 · 三流合一</b>三流在「确认收货」交汇：物流触发信息流，信息流解锁资金流 —— 这就是担保交易的全部秘密。</div>
+  </div>
+  <div class="example">
+    <span class="t">例 · 三流为什么必须分开看</span>
+    <p>小赵在抖音买咖啡豆，付款成功（资金流已动）但商家还没发货（货物流没动）。如果此时小赵申请退款，系统判断依据是<strong>物流状态</strong>而不是资金状态 —— 未发货则全额退，已发货可能要扣运费。三流各自独立推进，又在关键节点互相校验。</p>
+  </div>
+
+  <h2>1.2 参与主体全景</h2>
+  <p>一笔银行卡线上支付，最少站着六个主体：<strong>用户、商户、平台（可选）、支付机构、清算机构、商业银行</strong>，外加最后的裁判 <strong>央行</strong>。每个主体的职责分工见 <a href="#ch-02" onclick="goChapter('ch-02')">第 2 章</a>。</p>
+
+  <h2>1.3 无担保 vs 有担保：两种根本不同的付款</h2>
+  <p class="term"><span class="w">无担保交易（即时到账）</span><span class="d">付款完成即视为商户收款，钱直接进入商户在支付机构的余额。<strong>信任基础是「用户对商户的信任」。</strong></span></p>
+  <p class="term"><span class="w">有担保交易（担保支付）</span><span class="d">付款后钱先冻结在平台/支付机构的担保户，履约完成（确认收货）后才划给商户。<strong>信任基础是「双方对平台的信任」</strong>—— 平台用冻结资金的方式替代了信任。</span></p>
+  <div class="fig-wrap">
+    <!--FIG:b1_guarantee_compare-->
+    <div class="fig-cap"><b>图 1-2 · 无担保 vs 有担保对比</b>注意区别不止是「到账时间」，而是<strong>谁承担交易风险</strong>：无担保时是用户自担，有担保时平台兜底。</div>
+  </div>
+  <div class="example">
+    <span class="t">例 · 什么时候该用哪种</span>
+    <p><strong>麦当劳小程序用即时到账</strong>：快餐即时交付、几乎无售后纠纷，担保反而拖累资金效率。</p>
+    <p><strong>抖音买咖啡豆必须担保</strong>：物流在途 2-3 天、可能有质量纠纷。如果钱直接给商家，小赵维权就要自己上门 —— 平台担保把「维权」简化成「退款」。</p>
+    <p><strong>反例：</strong>网吧充值、话费充值也常用即时到账，因为服务即时到账、纠纷率低。</p>
+  </div>
+
+  <h2>1.4 一笔即时到账的完整旅程</h2>
+  <p>先看最简单的路径 —— 麦当劳小程序，储蓄卡 30 元。注意每一步是信息还是资金：</p>
+  <div class="fig-wrap">
+    <!--FIG:b1_direct_path-->
+    <div class="fig-cap"><b>图 1-3 · 即时到账完整时序</b>注意两个「容易误会」的点：⑥⑦ 是大多数教程会省略的网联↔发卡行交互；⑪ 步之后商家的对公银行卡里<strong>仍然没有钱</strong>，详见 FAQ。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q"><span class="mark">Q</span>「支付成功」这一秒，钱到底动了没有？</div>
+    <div class="a">
+      <p>分三层看（<a href="#ch-faq" onclick="goChapter('ch-faq')">FAQ 章有专图</a>）：</p>
+      <p>① <strong>发卡行侧</strong>：小赵招行卡已实时扣款（日终批次确认）；<br>
+      ② <strong>支付机构侧</strong>：微信记「商户号余额 +30」，但这只是账本数字；<br>
+      ③ <strong>资金侧</strong>：真正的 30 元要 T+1 清算后才从招行划到微信在央行的备付金账户；商户提现后才到对公卡。</p>
+      <p><strong>一句话：支付成功 = 承诺到账，不是钱已落袋。</strong></p>
+    </div>
+  </div>
+
+  <h2>1.5 「即时到账」和「T+1 结算」为什么不矛盾</h2>
+  <p>这是初学者最容易困惑的一对词：既然即时到账了，为什么还要 T+1 结算？<strong>因为它们说的是三个不同的「账」</strong>—— 商户号账本、可提现余额、对公银行卡。以麦当劳小程序的一笔 29.82 元（已扣手续费）为例：</p>
+  <div class="fig-wrap">
+    <!--FIG:b1_instant_vs_settle-->
+    <div class="fig-cap"><b>图 1-4 · 即时到账 vs T+1 结算的三层账本</b>① 商户号余额是「记账层」，支付成功那一刻就更新，这就是商户口中「即时到账」；② 可提现余额是「解冻层」，由渠道结算周期（T+1/T+3/T+7）决定何时解冻；③ 对公银行卡是「资金层」，提现后还要等银行 1~3 个工作日。</div>
+  </div>
+  <div class="qa">
+    <div class="q"><span class="mark">Q</span>既然是「即时到账」，商家为什么不能立即提现到银行卡？</div>
+    <div class="a">
+      <p>分三种情况看（以微信支付为例，支付宝逻辑相同）：</p>
+      <p>① <strong>T+1 类目（最常见）</strong>：交易当天实时结算到基本账户，<strong>次日</strong>才可发起提现；提现后 1~3 个工作日到对公卡。</p>
+      <p>② <strong>T+3 / T+7 类目</strong>：钱当天就入账，但进入的是「基本账户不可用余额」，第 3/7 天才解冻为可用余额，解冻次日发起自动提现 —— 商户后台能看到数字，但动不了。</p>
+      <p>③ <strong>担保交易</strong>：钱冻结在担保户里，确认收货分账后才会进入商户余额，周期更长（第 9 章）。</p>
+      <p><strong>一句话：商户后台的余额数字是支付机构给你的「记账承诺」，不是银行里的现金。</strong>这也是为什么对账要对三本账（第 12 章）。</p>
+    </div>
+  </div>
+
+  <h2>1.6 为什么支付系统最难做</h2>
+  <ul>
+    <li><strong>资金不可逆，错误成本极高。</strong>接口挂了可以重启，钱多付了要打官司追回。</li>
+    <li><strong>多方系统，无全局事务。</strong>你的系统、微信、网联、发卡行各是独立宇宙，没有谁能包一个事务。</li>
+    <li><strong>强监管，规则高于效率。</strong>备付金、断直连、反洗钱 —— 很多「反直觉」的设计不是技术选择，是监管要求。</li>
+  </ul>
+  <div class="callout warn">
+    <span class="t">架构师的四问（贯穿全书）</span>
+    设计任何支付功能前自问：① 这笔钱的<strong>法律所有权</strong>在每一步归谁？② 哪一步开始<strong>不可逆</strong>？③ 出错时<strong>谁发现、怎么发现</strong>（对账）？④ 发现后<strong>怎么兜底</strong>（退款/垫资/追偿）？
+  </div>
+
+  <div class="ch-nav">
+    <a href="#ch-00" onclick="goChapter('ch-00')">← 第 0 章</a>
+    <a href="#ch-02" onclick="goChapter('ch-02')">第 2 章 · 参与主体与牌照 →</a>
+  </div>
+</section>

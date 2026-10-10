@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{BOOK_TITLE}}</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23101d33'/><path d='M8 11h16v3H8zm0 6h10v3H8zm0 6h13v3H8z' fill='%23c9a227'/></svg>">
+<style>
+:root{
+  --navy:#101d33; --navy2:#1b2f4d; --navy3:#243c5e;
+  --gold:#c9a227; --gold2:#e3c25a;
+  --ink:#1c2430; --ink2:#445060; --muted:#6b7686;
+  --paper:#f7f5f0; --paper2:#fffdf8; --line:#e2ddd2;
+  --green:#2f8f5b; --red:#c4483f; --amber:#c07f1b; --blue:#2f6fb0;
+  --purple:#6b4fa0;
+  --shadow:0 2px 14px rgba(16,29,51,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'PingFang SC','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif;background:var(--paper);color:var(--ink);line-height:1.9;font-size:16px}
+h1,h2,h3,h4{font-family:'Songti SC','Noto Serif SC','SimSun',serif;line-height:1.4;color:var(--navy)}
+.page{max-width:860px;margin:0 auto;padding:0 30px 90px}
+
+/* ===== 封面 ===== */
+.cover{min-height:92vh;background:radial-gradient(1200px 600px at 80% -10%,#2b4569,var(--navy) 60%);color:#e9edf3;display:flex;align-items:center;padding:60px 30px;position:relative;overflow:hidden}
+.cover::after{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.06) 1px,transparent 1px);background-size:22px 22px;pointer-events:none}
+.cover-inner{max-width:860px;margin:0 auto;position:relative;z-index:1}
+.cover .kicker{letter-spacing:.3em;color:var(--gold);font-size:13px;margin-bottom:22px;font-weight:500}
+.cover h1{font-size:clamp(32px,6vw,54px);color:#fff;font-weight:900;line-height:1.22;margin-bottom:18px}
+.cover .sub{font-size:clamp(15px,2.3vw,19px);color:#c6d2e4;max-width:660px;line-height:1.9}
+.cover .meta{margin-top:34px;color:#9fb0c9;font-size:14px;border-top:1px solid rgba(201,162,39,.35);padding-top:18px;display:flex;flex-wrap:wrap;gap:10px}
+.cover .meta span{padding:6px 14px;border:1px solid rgba(201,162,39,.4);border-radius:30px;color:var(--gold2)}
+.cover .v2{position:absolute;top:26px;right:30px;background:rgba(201,162,39,.14);border:1px solid rgba(201,162,39,.5);color:var(--gold2);padding:6px 14px;border-radius:30px;font-size:12.5px;letter-spacing:.1em}
+.cover .scrollhint{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);color:#8fa2bf;font-size:13px;letter-spacing:.1em}
+
+/* ===== 侧边导航 ===== */
+.toc{position:fixed;top:0;left:0;bottom:0;width:300px;background:var(--navy);color:#cdd7e6;padding:26px 16px 40px;overflow-y:auto;z-index:50;transition:transform .28s ease;scrollbar-width:thin}
+.toc h4{color:#fff;font-size:17px;margin-bottom:4px;padding-left:8px}
+.toc .toc-sub{font-size:12px;color:#8296b4;margin-bottom:16px;padding-left:8px;letter-spacing:.05em}
+.toc a{display:block;color:#b8c5d9;text-decoration:none;padding:6px 12px;border-radius:8px;font-size:13px;line-height:1.45;border-left:3px solid transparent}
+.toc a:hover{background:#1d3050;color:#fff}
+.toc a.active{color:var(--gold2);background:#1d3050;border-left-color:var(--gold)}
+.toc .grp{color:#7e93b1;font-size:11px;letter-spacing:.18em;margin:16px 8px 5px;font-weight:600}
+.main-wrap{margin-left:300px;transition:margin-left .28s ease}
+body.nav-closed .toc{transform:translateX(-100%)}
+body.nav-closed .main-wrap{margin-left:0}
+.toc-toggle{position:fixed;top:14px;left:14px;width:40px;height:40px;background:var(--navy);border:none;color:var(--gold2);font-size:20px;border-radius:10px;cursor:pointer;z-index:55;display:none;box-shadow:var(--shadow)}
+@media(max-width:1000px){.toc{transform:translateX(-100%)}.main-wrap{margin-left:0}.toc-toggle{display:block}body.nav-open .toc{transform:none}}
+
+/* ===== 章节 ===== */
+.chapter{display:none;padding-top:60px;animation:fade .35s ease}
+.chapter.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.ch-head{border-bottom:2px solid var(--navy);padding-bottom:18px;margin-bottom:32px}
+.ch-num{font-size:12.5px;letter-spacing:.3em;color:var(--gold);font-weight:700}
+.ch-head h1{font-size:clamp(26px,4.5vw,38px);margin:10px 0 12px}
+.ch-head .lede{color:var(--ink2);font-size:16.5px;max-width:720px}
+.part-tag{display:inline-block;background:var(--navy);color:var(--gold2);font-size:11.5px;padding:4px 12px;border-radius:30px;margin-top:14px;letter-spacing:.08em}
+h2{font-size:23px;margin:40px 0 16px;padding-left:12px;border-left:5px solid var(--gold)}
+h3{font-size:18.5px;margin:28px 0 12px;color:var(--navy2)}
+p{margin:12px 0;color:var(--ink2)}
+p.lead{font-size:17px;color:var(--ink)}
+strong{color:var(--navy)}
+em{color:var(--navy2);font-style:normal;border-bottom:2px solid rgba(201,162,39,.45)}
+ul,ol{margin:12px 0 12px 24px;color:var(--ink2)}
+li{margin:7px 0}
+code{background:#eee8da;color:#6b4d0a;padding:2px 7px;border-radius:6px;font-size:.88em}
+.kicker{font-size:12.5px;letter-spacing:.15em;color:var(--gold);font-weight:700;margin-bottom:8px}
+
+/* ===== 卡片 ===== */
+.card{background:var(--paper2);border:1px solid var(--line);border-radius:14px;padding:20px 24px;margin:18px 0;box-shadow:var(--shadow)}
+.card h3{margin-top:0}
+.callout{border-radius:12px;padding:16px 20px;margin:18px 0;font-size:15px}
+.callout .t{font-weight:700;display:block;margin-bottom:5px;color:var(--navy)}
+.callout.risk{background:#fdf1ef;border-left:5px solid var(--red)}
+.callout.arch{background:#eef3f8;border-left:5px solid var(--blue)}
+.callout.warn{background:#fdf6e8;border-left:5px solid var(--amber)}
+.callout.ok{background:#eef7f1;border-left:5px solid var(--green)}
+.callout.story{background:#f6f2fb;border-left:5px solid var(--purple)}
+/* 例子框：概念落地 */
+.example{background:#f6f2fb;border:1px solid #d9cdf0;border-left:5px solid var(--purple);border-radius:12px;padding:16px 20px;margin:18px 0;font-size:15px}
+.example .t{font-weight:700;color:var(--purple);display:block;margin-bottom:6px;letter-spacing:.06em}
+.example p{margin:6px 0}
+/* 问答框 */
+.qa{background:var(--paper2);border:1px solid var(--line);border-radius:14px;margin:20px 0;overflow:hidden;box-shadow:var(--shadow)}
+.qa .q{background:var(--navy);color:#fff;padding:13px 20px;font-weight:600;font-size:15.5px;display:flex;gap:10px;align-items:baseline}
+.qa .q .mark{color:var(--gold2);font-family:serif;font-size:19px;font-weight:900}
+.qa .a{padding:16px 20px}
+.qa .a p{margin:8px 0}
+/* 术语 */
+.term{background:var(--paper2);border:1px dashed var(--gold);border-radius:10px;padding:12px 16px;margin:10px 0}
+.term .w{font-weight:700;color:var(--navy)}
+.term .d{color:var(--ink2);font-size:14.5px;margin-top:3px}
+/* 表格 */
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px;table-layout:fixed}
+th,td{border:1px solid var(--line);padding:9px 11px;text-align:left;vertical-align:top;line-height:1.7}
+th{background:var(--navy);color:#fff;font-weight:600;font-size:13.5px}
+tr:nth-child(even) td{background:#f3f0e8}
+td b,td strong{color:var(--navy)}
+/* 图 */
+.fig-wrap{background:var(--paper2);border:1px solid var(--line);border-radius:14px;padding:16px 14px;margin:22px 0;box-shadow:var(--shadow);overflow-x:auto}
+.fig-cap{font-size:12.5px;color:var(--muted);margin-top:10px;text-align:center;letter-spacing:.03em;line-height:1.7}
+.fig-cap b{color:var(--navy2)}
+.svg-fig{width:100%;min-width:640px;height:auto;display:block}
+@media(max-width:700px){.svg-fig{min-width:560px}}
+/* 步骤流（HTML） */
+.flow{background:var(--navy);color:#e9edf3;border-radius:14px;padding:20px;margin:18px 0;font-size:14px;overflow-x:auto}
+.flow .title{color:var(--gold2);font-weight:700;margin-bottom:10px;letter-spacing:.1em}
+.flow .steps{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch}
+.flow .step{background:#1d3050;border:1px solid #2d4568;border-radius:9px;padding:8px 12px;flex:1 1 160px;min-width:150px}
+.flow .step b{display:block;color:#fff;margin-bottom:3px;font-size:14px}
+.flow .step span{color:#9fb0c9;font-size:12.5px}
+/* 底部导航 */
+.ch-nav{display:flex;justify-content:space-between;gap:14px;margin-top:52px;padding-top:24px;border-top:1px solid var(--line)}
+.ch-nav button,.ch-nav a{background:var(--navy);color:#fff;border:none;padding:11px 22px;border-radius:10px;cursor:pointer;font-size:14.5px;font-weight:500;text-decoration:none;transition:background .2s}
+.ch-nav button:hover,.ch-nav a:hover{background:var(--navy2)}
+.ch-nav .ghost{background:#8a97a8;opacity:.55;cursor:default}
+.progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--gold2));z-index:60;width:0;transition:width .2s}
+.backtop{position:fixed;bottom:26px;right:26px;background:var(--navy);color:var(--gold2);width:44px;height:44px;border:none;border-radius:50%;font-size:20px;cursor:pointer;box-shadow:var(--shadow);z-index:40;display:none}
+.backtop.show{display:block}
+/* 自测题折叠卡 */
+details.q{background:var(--paper2);border:1px solid var(--line);border-radius:10px;margin:8px 0;overflow:hidden;box-shadow:var(--shadow)}
+details.q summary{cursor:pointer;padding:12px 16px;font-weight:600;font-size:15px;color:var(--navy);list-style:none;display:flex;gap:8px;align-items:baseline}
+details.q summary::before{content:"Q";color:var(--gold);font-family:serif;font-weight:900;font-size:17px;flex:none}
+details.q summary::-webkit-details-marker{display:none}
+details.q summary:hover{background:#f3efe5}
+details.q[open] summary{border-bottom:1px dashed var(--line);background:#f3efe5}
+details.q .ans{padding:12px 16px 14px;color:var(--ink2);font-size:14.5px;line-height:1.8}
+details.q .ans::before{content:"A";color:var(--green);font-family:serif;font-weight:900;margin-right:8px}
+@media print{
+  .toc,.backtop,.ch-nav,.progress,.toc-toggle{display:none!important}
+  .main-wrap{margin-left:0}
+  .chapter{display:block!important;page-break-before:always}
+}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<button class="toc-toggle" onclick="document.body.classList.toggle('nav-open')">☰</button>
+
+<nav class="toc" id="toc">
+  <h4>{{BOOK_SHORT}}</h4>
+  <div class="toc-sub">{{BOOK_SUB}}</div>
+  <div id="tocLinks"></div>
+</nav>
+
+<div class="main-wrap">
+{{COVER}}
+<div class="page" id="bookPage">
+{{CHAPTERS}}
+</div>
+</div>
+
+<button class="backtop" id="backtop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+const CH = {{CHAPTERS_JSON}};
+// 生成目录（注意：a 上只带 href，点击交给下面的统一事件委托处理）
+(function(){
+  const box = document.getElementById('tocLinks');
+  let html = '';
+  let lastGrp = null;
+  CH.forEach((c,i)=>{
+    if(c.grp && c.grp !== lastGrp){ html += `<div class="grp">${c.grp}</div>`; lastGrp = c.grp; }
+    html += `<a href="#${c.id}" data-i="${i}">${c.label}</a>`;
+  });
+  box.innerHTML = html;
+})();
+let cur = 0;
+function goChapter(id){
+  const i = CH.findIndex(c=>c.id===id);
+  if(i<0) return;
+  show(i);
+  const page = document.getElementById('bookPage');
+  window.scrollTo({top: page.offsetTop, behavior:'instant'});
+}
+function show(i){
+  cur = i;
+  document.querySelectorAll('.chapter').forEach(s=>s.classList.remove('on'));
+  const el = document.getElementById(CH[i].id);
+  if(el) el.classList.add('on');
+  document.querySelectorAll('#tocLinks a').forEach(a=>a.classList.toggle('active', +a.dataset.i===i));
+  document.body.classList.remove('nav-open');
+  updateProgress();
+}
+function updateProgress(){
+  const p = (cur+1)/CH.length*100;
+  document.getElementById('progress').style.width = p+'%';
+}
+// 关键修复：所有站内 # 锚点点击统一走这里
+// 目录链接此前没绑事件，点了只换地址栏 hash、不切章节，所以“点了没反应”。
+document.addEventListener('click', function(e){
+  const a = e.target.closest && e.target.closest('a[href^="#"]');
+  if(!a) return;
+  const id = a.getAttribute('href').slice(1);
+  if(!id) return;
+  const i = CH.findIndex(c=>c.id===id);
+  if(i >= 0){
+    e.preventDefault();
+    goChapter(id);
+    history.replaceState(null, '', '#' + id);
+    return;
+  }
+  const el = document.getElementById(id);
+  if(el){ e.preventDefault(); el.scrollIntoView({behavior:'smooth', block:'start'}); }
+});
+// 地址栏带 hash 打开时直接进对应章节
+window.addEventListener('hashchange', function(){
+  const id = location.hash.slice(1);
+  if(!id) return;
+  const i = CH.findIndex(c=>c.id===id);
+  if(i >= 0 && i !== cur) goChapter(id);
+});
+window.addEventListener('scroll',()=>{
+  document.getElementById('backtop').classList.toggle('show', window.scrollY>600);
+});
+(function(){
+  const id = location.hash.slice(1);
+  const i = CH.findIndex(c=>c.id===id);
+  show(i >= 0 ? i : 0);
+})();
+</script>
+</body>
+</html>

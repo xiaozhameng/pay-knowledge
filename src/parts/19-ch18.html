@@ -1,0 +1,34 @@
+<!-- meta: id=ch-18 | grp=第七篇 · 资损治理与职业 | label=第18章 · 架构演进与职业跃迁 -->
+<section class="chapter" id="ch-18">
+  <div class="ch-head">
+    <div class="ch-num">PART 7 · CH 18</div>
+    <h1>架构演进与职业跃迁</h1>
+    <p class="lede">最后回答两个问题：一个公司的支付系统是怎么长大的？你的能力是怎么升级的？</p>
+    <span class="part-tag">第七篇 · 资损治理与职业</span>
+  </div>
+
+  <h2>18.1 支付系统的演进路径</h2>
+  <table>
+    <colgroup><col style="width:16%"><col style="width:44%"><col style="width:40%"></colgroup>
+    <tr><th>阶段</th><th>形态</th><th>痛点</th></tr>
+    <tr><td><b>单点</b></td><td>业务代码里直接调微信 SDK</td><td>第二个业务方出现时开始腐烂</td></tr>
+    <tr><td><b>共享服务</b></td><td>独立支付服务，业务方走 RPC</td><td>渠道差异散落各处，对账靠人</td></tr>
+    <tr><td><b>支付中台</b></td><td>统一支付/账务/对账/风控，多业务接入</td><td>平台化治理与多租户</td></tr>
+    <tr><td><b>开放金融</b></td><td>对外输出收单能力（类似收单机构）</td><td>监管资质与生态协同</td></tr>
+  </table>
+
+  <h2>18.2 能力路线图</h2>
+  <div class="fig-wrap">
+    <!--FIG:h18_career-->
+    <div class="fig-cap"><b>图 18-1 · 五级台阶</b>对照检查你现在在哪一级，下一级缺什么。</div>
+  </div>
+  <div class="callout arch">
+    <span class="t">如何最快升级</span>
+    L1→L2：把第 4、5、6 章的时序图亲手画一遍（画得出来说明真懂了）。L2→L3：接手一次线上掉单事故的完整排查。L3→L4：独立设计一个分账方案并回答 11 章的资损等式。L4→L5：经历一次真实资损复盘，或读完一本书（如《支付清结算》）。
+  </div>
+
+  <div class="ch-nav">
+    <a href="#ch-17" onclick="goChapter('ch-17')">← 第 17 章</a>
+    <a href="#ch-faq" onclick="goChapter('ch-faq')">FAQ 专章 · 高频问题一次性解答 →</a>
+  </div>
+</section>

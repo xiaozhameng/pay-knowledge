@@ -1,0 +1,43 @@
+<!-- meta: id=ch-11 | grp=第四篇 · 交易核心 | label=第11章 · 分账与分账回退 -->
+<section class="chapter" id="ch-11">
+  <div class="ch-head">
+    <div class="ch-num">PART 4 · CH 11</div>
+    <h1>分账与分账回退</h1>
+    <p class="lede">担保交易的最后一公里：确认收货后，钱怎么按规则分给商家、达人、平台。分账是「冻结资金的合法出口」，规则比想象中严格。</p>
+    <span class="part-tag">第四篇 · 交易核心</span>
+  </div>
+
+  <h2>11.1 分账的本质</h2>
+  <p class="term"><span class="w">定义</span><span class="d"><strong>分账 = 把一笔冻结的担保资金，按声明规则解冻并分配到多个接收方账户。</strong>必须在支付机构的规则内完成（白名单、限额、时限），平台不能「想分给谁分给谁」。</span></p>
+  <div class="fig-wrap">
+    <!--FIG:e11_share_seq-->
+    <div class="fig-cap"><b>图 11-1 · 分账时序</b>注意最后的「解冻剩余资金」：平台留存的佣金默认留在冻结户，需显式指令才进平台商户号。</div>
+  </div>
+
+  <h2>11.2 关键规则（微信为例）</h2>
+  <ul>
+    <li><strong>接收方白名单：</strong>分账接收方必须预先通过 API 添加并经微信审核；</li>
+    <li><strong>分账时限：</strong>订单完成后有限期内（如 180 天）必须完成分账或解冻剩余资金，否则资金滞留；</li>
+    <li><strong>比例上限：</strong>单笔分账比例受商户协议约束（默认 ≤30%，可申请调整）；</li>
+    <li><strong>分账回退：</strong>接收方可被回退（退款场景），回退资金回到冻结户。</li>
+  </ul>
+
+  <h2>11.3 资损敏感字段（设计表结构时必留）</h2>
+  <table>
+    <colgroup><col style="width:28%"><col style="width:36%"><col style="width:36%"></colgroup>
+    <tr><th>字段</th><th>说明</th><th>为什么重要</th></tr>
+    <tr><td><code>frozen_amount</code></td><td>原单冻结金额</td><td>分账总额不能超过它</td></tr>
+    <tr><td><code>shared_amount</code></td><td>已分账累计</td><td>部分分账/重试的依据</td></tr>
+    <tr><td><code>refunded_amount</code></td><td>已退款金额</td><td>退款与分账互相挤占</td></tr>
+    <tr><td><code>return_amount</code></td><td>已回退金额</td><td>回退不能再超出已分账额</td></tr>
+  </table>
+  <div class="callout risk">
+    <span class="t">一个等式守住资损</span>
+    <strong>冻结金额 = 已分账 + 已退款 + 已回退对方 + 剩余冻结</strong> —— 这个等式在任何一个时刻都必须成立，不成立就是资损，立即告警。
+  </div>
+
+  <div class="ch-nav">
+    <a href="#ch-10" onclick="goChapter('ch-10')">← 第 10 章</a>
+    <a href="#ch-12" onclick="goChapter('ch-12')">第 12 章 · 对账系统设计 →</a>
+  </div>
+</section>

@@ -1,0 +1,45 @@
+<!-- meta: id=ch-09 | grp=第四篇 · 交易核心 | label=第9章 · 担保交易全链路 -->
+<section class="chapter" id="ch-09">
+  <div class="ch-head">
+    <div class="ch-num">PART 4 · CH 9</div>
+    <h1>担保交易全链路</h1>
+    <p class="lede">淘宝、抖音、美团、拼多多 —— 所有平台电商的基石都是担保交易。这一章把「付款→冻结→发货→确认收货→分账」的完整链路拆开，信息流和资金流分别画。</p>
+    <span class="part-tag">第四篇 · 交易核心</span>
+  </div>
+
+  <h2>9.1 担保交易的本质</h2>
+  <p class="term"><span class="w">本质</span><span class="d"><strong>用「资金冻结」替代「人际信任」。</strong>用户信任平台，商家信任平台，平台把双方的钱和货都托管起来，履约完成才交换。</span></p>
+  <div class="fig-wrap">
+    <!--FIG:e9_guarantee_seq-->
+    <div class="fig-cap"><b>图 9-1 · 担保交易全时序</b>注意 ④：商家在担保期内只收到「可以发货」的通知，钱一分都没拿到。</div>
+  </div>
+
+  <h2>9.2 担保期的钱在哪</h2>
+  <div class="fig-wrap">
+    <!--FIG:e9_fund_location-->
+    <div class="fig-cap"><b>图 9-2 · 担保期资金位置</b>钱物理上躺在央行备付金账户（冻结态），微信只是在账本上记了一笔「担保户 +59」。</div>
+  </div>
+  <div class="qa">
+    <div class="q"><span class="mark">Q</span>用户 7 天后才点确认收货，这 7 天钱在哪？有收益吗？平台 7 天后才能发起分账吗？</div>
+    <div class="a">
+      <p>① <strong>钱在央行备付金账户，冻结态。</strong>D+1 清算后物理到位，但担保解冻前微信不能动它。</p>
+      <p>② <strong>没有收益。</strong>2019 年备付金集中存管后不计利息 —— 这笔钱不属于微信也不属于平台，谁都无权让它生息。</p>
+      <p>③ <strong>确认收货的那一刻就能发起分账</strong>，不用等 7 天。7 天只是「自动确认收货」的默认时限（用户不点，系统替他点）。详见 <a href="#ch-faq" onclick="goChapter('ch-faq')">FAQ 章时间轴</a>。</p>
+    </div>
+  </div>
+
+  <h2>9.3 担保期的异常场景</h2>
+  <table>
+    <colgroup><col style="width:26%"><col style="width:37%"><col style="width:37%"></colgroup>
+    <tr><th>场景</th><th>资金处理</th><th>系统要点</th></tr>
+    <tr><td>用户申请仅退款</td><td>解冻原路退回，不涉及商家余额</td><td>营销补贴部分单独退（见 FAQ）</td></tr>
+    <tr><td>退货退款</td><td>商家确认收货后，解冻退款</td><td>退货物流单与退款单关联</td></tr>
+    <tr><td>超时未确认收货</td><td>自动确认 → 自动分账</td><td>延时任务 + 幂等（分账可重入）</td></tr>
+    <tr><td>部分退款</td><td>解冻部分金额，其余照常分账</td><td>分账金额 = 原单 - 已退，实时校验</td></tr>
+  </table>
+
+  <div class="ch-nav">
+    <a href="#ch-08" onclick="goChapter('ch-08')">← 第 8 章</a>
+    <a href="#ch-10" onclick="goChapter('ch-10')">第 10 章 · 退款体系 →</a>
+  </div>
+</section>

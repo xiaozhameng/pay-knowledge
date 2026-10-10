@@ -1,0 +1,65 @@
+<!-- meta: id=ch-appx-troubleshoot | grp=附录 · 工具箱 | label=附录B · 线上问题排查手册 -->
+<section class="chapter" id="ch-appx-troubleshoot">
+  <div class="ch-head">
+    <div class="ch-num">APPENDIX B</div>
+    <h1>线上问题排查手册</h1>
+    <p class="lede">设计得再好的系统也会出事。架构师和普通工程师的分水岭，往往就是「报警响起的 30 分钟里你在干什么」。这一章把支付线上最高频的三类报警整理成可直接照做的排查路径。</p>
+    <span class="part-tag">附录 · 工具箱</span>
+  </div>
+
+  <h2>B.1 排查总原则：先定位钱，再定位账</h2>
+  <p class="lead">任何支付异常，第一反应不是翻代码，而是回答两个问题：<strong>钱实际动了没有（渠道侧）、账记了没有（我方侧）</strong>。两个答案一组合，问题就只剩下四种可能，每种都有固定解法。</p>
+  <div class="fig-wrap">
+    <!--FIG:appx_troubleshoot-->
+    <div class="fig-cap"><b>图 B-1 · 三大报警排查决策树</b>每一层只做一件事：第一层确认症状，第二层拿到「渠道有没有」的事实，第三层按组合出招。</div>
+  </div>
+
+  <h2>B.2 症状 A：用户付了钱，订单显示未支付</h2>
+  <div class="card">
+    <h3>排查顺序</h3>
+    <ul>
+      <li><strong>① 拿到证据：</strong>让用户提供扣款凭证（微信/银行账单截图上的商户单号或流水号），确认「确实扣了」而非「以为扣了」。</li>
+      <li><strong>② 调渠道查单：</strong>用 out_trade_no 调查单接口。渠道返回 SUCCESS → <strong>长款（掉单）</strong>：我方回调没处理成功；返回 NOTPAY/CLOSED → <strong>短款</strong>：用户侧扣款其实失败了（余额不足后换卡成功是另一笔单）。</li>
+      <li><strong>③ 掉单修复：</strong>补记支付成功 → 触发业务补偿（发货/开通权益）→ 复盘回调为何丢失（验签失败？MQ 堆积？接口超时？）。</li>
+    </ul>
+  </div>
+  <div class="callout warn">
+    <span class="t">经验</span>
+    这类投诉里约七成是「用户扣款失败的单 + 换方式重付成功的单」两笔单号不同 —— 先比对单号再下结论，能省一半排查时间。
+  </div>
+
+  <h2>B.3 症状 B：用户被扣了两次</h2>
+  <div class="card">
+    <h3>排查顺序</h3>
+    <ul>
+      <li><strong>① 查我方支付单表：</strong>按 out_trade_no 查。若存在<strong>两笔不同的支付单</strong>对应同一笔订单 → 幂等失效（用户狂点/重试生成了两单）。</li>
+      <li><strong>② 若只有一笔支付单</strong>但渠道扣了两次 → 渠道侧重复扣款（罕见但存在），持渠道流水号向渠道申诉。</li>
+      <li><strong>③ 处置：</strong>确认重复后立即原路退回一笔（第 10 章），用户情绪优先；随后修幂等：唯一索引 + 前端防连点 + 状态机 CAS（第 13 章三板斧）。</li>
+    </ul>
+  </div>
+
+  <h2>B.4 症状 C：对账系统报警（长款 / 短款 / 金额不平）</h2>
+  <table>
+    <colgroup><col style="width:16%"><col style="width:42%"><col style="width:42%"></colgroup>
+    <tr><th>差错</th><th>最可能的根因</th><th>修复动作</th></tr>
+    <tr><td><b>长款</b></td><td>回调丢失、落库失败、补偿任务中断</td><td>补偿查单确认 → 补单 → 触发业务补偿</td></tr>
+    <tr><td><b>短款</b></td><td>我方误记成功（调渠道超时按成功处理）、日切跨天归属错误</td><td>补偿查单确认失败 → 关单回滚；跨天的按渠道账单日期重新归档</td></tr>
+    <tr><td><b>金额不平</b></td><td>手续费规则变更未同步、优惠/补贴拆错字段、退款部分额未扣减</td><td>核对手续费率配置与金额拆字段（第 14 章表结构），修复后回算</td></tr>
+  </table>
+
+  <h2>B.5 止损与复盘的纪律</h2>
+  <ul>
+    <li><strong>先止损，再定位。</strong>涉及出款（退款/分账/提现）的异常，第一步永远是「熔断出款」——宁可暂停服务，不可继续漏钱。</li>
+    <li><strong>修数据要留痕。</strong>任何手工修账必须工单化：谁改的、改了什么字段、依据哪笔渠道流水 —— 支付系统的数据修补本身是审计对象。</li>
+    <li><strong>每个故障转化为一道防线。</strong>复盘会只回答三个问题：为什么没拦住（事前）、为什么没发现（监控）、为什么发现得这么晚（对账时延）。三个答案各补一个机制，故障才算「花得值」。</li>
+  </ul>
+  <div class="callout risk">
+    <span class="t">红线</span>
+    不要在生产库直接 UPDATE 金额字段平账。正确做法永远是「补一笔反向/正向流水」——账是流水堆出来的，不是改出来的。直接改余额等于销毁证据，也是资损审计的高压线。
+  </div>
+
+  <div class="ch-nav">
+    <a href="#ch-appx-glossary" onclick="goChapter('ch-appx-glossary')">← 附录 A · 支付黑话词典</a>
+    <a href="#ch-appx-quiz" onclick="goChapter('ch-appx-quiz')">附录 C · 架构师自测 20 题 →</a>
+  </div>
+</section>

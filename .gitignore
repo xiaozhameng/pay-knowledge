@@ -1,0 +1,7 @@
+# 临时产物与本地巡检文件，不入库
+_shots/
+tools/_preview/
+tools/_smoke/
+.DS_Store
+__pycache__/
+*.pyc

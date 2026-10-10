@@ -1,0 +1,39 @@
+<!-- meta: id=ch-13 | grp=第五篇 · 中台工程 | label=第13章 · 分布式事务与幂等 -->
+<section class="chapter" id="ch-13">
+  <div class="ch-head">
+    <div class="ch-num">PART 5 · CH 13</div>
+    <h1>分布式事务与幂等</h1>
+    <p class="lede">支付没有全局事务，也不需要 —— 需要的是「每一步可重试、每一步可核查」。这一章讲工程上怎么落地。</p>
+    <span class="part-tag">第五篇 · 中台工程</span>
+  </div>
+
+  <h2>13.1 为什么没有全局事务</h2>
+  <p>你的数据库、微信、网联、发卡行是四个独立系统，2PC/XA 无法跨出你的机房。行业标准做法是<strong>最终一致</strong>：本地事务 + 可靠消息 + 对账兜底。</p>
+
+  <h2>13.2 三种方案的取舍</h2>
+  <table>
+    <colgroup><col style="width:20%"><col style="width:40%"><col style="width:40%"></colgroup>
+    <tr><th>方案</th><th>支付场景应用</th><th>取舍</th></tr>
+    <tr><td><b>TCC</b></td><td>账户冻结类操作（余额扣减：Try 冻结、Confirm 扣、Cancel 解冻）</td><td>强一致但实现重，只用于核心账务</td></tr>
+    <tr><td><b>SAGA</b></td><td>长流程（支付→发货→分账），每步带补偿</td><td>适合跨系统编排，需处理补偿失败</td></tr>
+    <tr><td><b>本地消息表</b></td><td>支付成功后通知订单/库存/积分</td><td>最常用：与业务同库事务写入，定时扫描投递</td></tr>
+  </table>
+
+  <h2>13.3 幂等：支付的保命设计</h2>
+  <div class="fig-wrap">
+    <!--FIG:f13_idempotent-->
+    <div class="fig-cap"><b>图 13-1 · 幂等三板斧</b>唯一索引、状态机 CAS、分布式锁 —— 三层防护缺一不可。</div>
+  </div>
+  <div class="example">
+    <span class="t">例 · 一个真实的翻车</span>
+    <p>某平台回调处理逻辑：「收到支付成功 → 给用户加 100 积分」。微信回调会重试（没收到 success 应答时），某天网络抖动，同一笔回调重发了 5 次，用户加了 500 积分。积分能兑换现金券 —— 这就是资损。<strong>正确做法：按 out_trade_no 建唯一表，重复回调直接丢弃。</strong></p>
+  </div>
+
+  <h2>13.4 最终一致的对账兜底</h2>
+  <p>所有补偿都可能失败，最后一道防线永远是第 12 章的对账系统。工程节奏：<strong>实时靠幂等、准实时靠补偿查单、T+1 靠对账</strong> —— 三层时间尺度兜住同一件事。</p>
+
+  <div class="ch-nav">
+    <a href="#ch-12" onclick="goChapter('ch-12')">← 第 12 章</a>
+    <a href="#ch-14" onclick="goChapter('ch-14')">第 14 章 · 支付中台架构与领域建模 →</a>
+  </div>
+</section>

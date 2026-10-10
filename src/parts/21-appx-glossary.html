@@ -1,0 +1,70 @@
+<!-- meta: id=ch-appx-glossary | grp=附录 · 工具箱 | label=附录A · 支付黑话词典 -->
+<section class="chapter" id="ch-appx-glossary">
+  <div class="ch-head">
+    <div class="ch-num">APPENDIX A</div>
+    <h1>支付黑话词典</h1>
+    <p class="lede">看行业文章、对接渠道文档、参加评审会，最先拦住你的往往不是原理，而是黑话。这一章把全书散落的术语 + 正文没来得及展开的行话集中收录，按主题分组，可当字典查。</p>
+    <span class="part-tag">附录 · 工具箱</span>
+  </div>
+
+  <h2>A.1 机构与监管类</h2>
+  <p class="term"><span class="w">二清</span><span class="d">「二次清算」的简称，指没有牌照的平台先把用户的钱收进自己账户、再手工/批量结给商家 —— 钱在无监管主体手里过了一夜，卷款跑路风险极大，央行明令禁止。识别方法：你的货款先进了某公司的个人账户或非持牌账户，就是二清。平台合规的做法是接「分账」产品（第 11 章），让持牌机构替你清。</span></p>
+  <p class="term"><span class="w">备付金</span><span class="d">用户已付、商户未拿的钱，2019 年起 100% 集中缴存央行。详见第 3 章。</span></p>
+  <p class="term"><span class="w">断直连</span><span class="d">2018 年监管动作：切断支付机构与银行的直接连接，交易必须经网联/银联转接。详见第 3 章。</span></p>
+  <p class="term"><span class="w">收单 / 收单机构</span><span class="d">「受理收款」的动作与干这件事的持牌机构。谁帮你把用户的钱收进来，谁就是你的收单方 —— 线上通常是微信支付/支付宝，线下可能是拉卡拉、银联商务。</span></p>
+  <p class="term"><span class="w">发卡行 / 收单行</span><span class="d">发卡行：给用户发银行卡的银行（站在用户侧，管扣款）；收单行：给商户提供收款服务的银行（站在商户侧，管入账）。一张卡消费时两家各管一头。</span></p>
+  <p class="term"><span class="w">卡组织</span><span class="d">制定卡片交易规则并运营转接网络的机构：国内是银联，国际是 Visa / Mastercard。</span></p>
+
+  <h2>A.2 清结算类</h2>
+  <p class="term"><span class="w">T+1 / T+0 / D+0</span><span class="d">T=交易日（Trade day），D=自然日（Day）。T+1 = 交易日后第一个工作日到账；T+0 = 当日（工作日）到账；D+0 = 当天到账，节假日也算。秒到产品本质是机构垫资。</span></p>
+  <p class="term"><span class="w">清算 / 结算 / 轧差 / 划拨</span><span class="d">算账 / 确认债务 / 多边互抵成净额 / 资金真实转移。四者不是同义词，是同一晚的四个阶段，详见第 4 章。</span></p>
+  <p class="term"><span class="w">头寸</span><span class="d">银行在央行账户上的可用资金余额。「头寸不足」= 账上钱不够划拨，结算会延后 —— 这就是「结算完成 ≠ 钱到了」的原因。</span></p>
+  <p class="term"><span class="w">日切（Cut-off）</span><span class="d">清算系统在固定时刻（通常 23:00 前后）「切一刀」划分清算批次，跨零点订单的归属由此决定。详见第 5 章。</span></p>
+  <p class="term"><span class="w">长款 / 短款</span><span class="d">对账差错的两个方向：渠道有、我没有 = 长款（大概率我方掉单）；我有、渠道没有 = 短款（大概率用户侧失败）。详见第 5、12 章。</span></p>
+  <p class="term"><span class="w">对账文件 / 资金账单</span><span class="d">渠道 T+1 下发的两份文件：交易账单（每笔明细+手续费）与资金账单（清算到账净额）。对账系统分别与自家流水、银行入账核对。</span></p>
+
+  <h2>A.3 交易与资金类</h2>
+  <p class="term"><span class="w">即时到账 / 担保交易</span><span class="d">付款即算商户收款 vs 先冻结、确认收货才分账。详见第 1、9 章。</span></p>
+  <p class="term"><span class="w">分账 / 分账回退</span><span class="d">把冻结的担保资金按规则分配给多个接收方；回退是其逆操作（退款时从接收方余额要回来）。详见第 11 章。</span></p>
+  <p class="term"><span class="w">原路退回</span><span class="d">退款铁律：零钱付的退零钱、卡付的退卡，不能换路径。详见第 10 章。</span></p>
+  <p class="term"><span class="w">掉单</span><span class="d">渠道已扣款、我方系统无成功记录（回调丢失/落库失败）。用户视角「钱付了单没成」，靠补偿查单 + 对账修复。</span></p>
+  <p class="term"><span class="w">重复支付</span><span class="d">同一笔业务被扣两次。根因几乎总是幂等缺失（用户狂点/重试无去重）。详见第 13 章。</span></p>
+  <p class="term"><span class="w">关单</span><span class="d">关闭未完成的支付单（超时未付或确认失败），释放占用、允许重新下单。</span></p>
+  <p class="term"><span class="w">异步通知 / 回调（notify）</span><span class="d">渠道支付完成后主动推给你服务器的结果通知。铁律：验签、解密、不信内容、必须查单确认终态。详见第 6 章。</span></p>
+  <p class="term"><span class="w">查单</span><span class="d">主动向渠道查询支付单真实状态的接口，是终态判断的唯一可信来源。</span></p>
+
+  <h2>A.4 支付方式类</h2>
+  <p class="term"><span class="w">快捷支付</span><span class="d">银行卡绑在支付机构后，付款只需短信/密码、不跳网银的支付方式 —— 你在微信里用卡付款就是快捷支付。</span></p>
+  <p class="term"><span class="w">协议支付 / 代扣</span><span class="d">用户预先签授权协议，之后商户可按协议主动扣款（会员续费、水电煤）。代扣是协议支付的俗称，监管已大幅收紧（需逐笔验证的场景增多）。</span></p>
+  <p class="term"><span class="w">代付</span><span class="d">与代扣方向相反：机构/平台把资金批量打给收款人（工资、佣金、理赔）。属于出款业务，风控与资损要求最高。</span></p>
+  <p class="term"><span class="w">网关支付</span><span class="d">跳转到银行网银页面完成支付的古老方式，PC 时代主流，移动端基本被淘汰。</span></p>
+  <p class="term"><span class="w">主扫 / 被扫</span><span class="d">主扫（C 扫 B）：用户打开 App 扫商户的收款码；被扫（B 扫 C）：商户用扫码枪扫用户的付款码。被扫费率低、无需用户联网确认，是便利店的主流。</span></p>
+  <p class="term"><span class="w">聚合支付</span><span class="d">一个码同时支持微信/支付宝/云闪付 —— 由聚合服务商在多个渠道之上做了一层路由，码不变、通道自动识别。</span></p>
+
+  <h2>A.5 工程类</h2>
+  <p class="term"><span class="w">幂等 / 幂等键</span><span class="d">同一请求做 N 次等于做 1 次；实现它靠唯一业务键（out_trade_no / out_refund_no）。支付的保命设计，详见第 13 章。</span></p>
+  <p class="term"><span class="w">状态机</span><span class="d">用「状态 + 合法迁移」约束单据生命周期（CREATED→PAYING→SUCCESS…），终态不可逆。详见第 14 章。</span></p>
+  <p class="term"><span class="w">补偿</span><span class="d">主流程失败后按既定策略反向/重试修复（补偿查单、补偿退款、补偿发货），是最终一致的执行者。</span></p>
+  <p class="term"><span class="w">资损</span><span class="d">资金损失：账实不符的每一分钱。防控体系见第 17 章。</span></p>
+  <p class="term"><span class="w">本地消息表</span><span class="d">可靠消息投递的经典方案：消息与业务同库事务写入，定时扫描重投，保证「支付成功后通知订单」不丢。详见第 13 章。</span></p>
+
+  <h2>A.6 跨境类</h2>
+  <p class="term"><span class="w">外卡收单</span><span class="d">受理境外银行卡（Visa/Mastercard）的收单业务， Auth 与 Capture 分离。详见第 15 章。</span></p>
+  <p class="term"><span class="w">Auth / Capture / Void</span><span class="d">外卡三件套：授权（冻额度）/ 请款（真扣）/ 撤销（解冻未请款的授权）。</span></p>
+  <p class="term"><span class="w">拒付（Chargeback）</span><span class="d">持卡人向发卡行申诉某笔交易，成立则强制退款 + 罚金，风险由商户承担。详见第 15 章。</span></p>
+  <p class="term"><span class="w">3DS2</span><span class="d">发卡行参与的二次验证，通过后拒付责任转移给发卡行。</span></p>
+  <p class="term"><span class="w">结汇 / 购汇</span><span class="d">外币换人民币（出口收款回国）/ 人民币换外币（出境付款）。受外管局额度与真实贸易背景审核约束。</span></p>
+  <p class="term"><span class="w">SWIFT</span><span class="d">银行间跨境报文网络 —— 它只传「指令」不搬钱，资金仍走各国代理行账户划转。</span></p>
+  <p class="term"><span class="w">卡 BIN</span><span class="d">卡号前 6~8 位，标识发卡行与卡种。路由（走哪家银行）、风控（异地卡拦截）都靠它判断。</span></p>
+  <p class="term"><span class="w">MCC</span><span class="d">商户类别码（4 位数字），标识商户行业（餐饮 5812、超市 5411…）。费率定价、风控规则、营销活动都按 MCC 区分。</span></p>
+
+  <div class="callout arch">
+    <span class="t">使用建议</span>
+    遇到没收录的黑话，先判断它属于哪一层：「监管造出来的」（如断直连、备付金——查第 3 章）、「清算造出来的」（如头寸、日切——查第 4、5 章）、「渠道造出来的」（如 prepay_id、trade_no——查第 6、7 章）。绝大多数行话都是这三层的土话。
+  </div>
+
+  <div class="ch-nav">
+    <a href="#ch-faq" onclick="goChapter('ch-faq')">← FAQ 专章</a>
+    <a href="#ch-appx-troubleshoot" onclick="goChapter('ch-appx-troubleshoot')">附录 B · 线上问题排查手册 →</a>
+  </div>
+</section>

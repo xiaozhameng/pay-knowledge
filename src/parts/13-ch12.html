@@ -1,0 +1,42 @@
+<!-- meta: id=ch-12 | grp=第五篇 · 中台工程 | label=第12章 · 对账系统设计 -->
+<section class="chapter" id="ch-12">
+  <div class="ch-head">
+    <div class="ch-num">PART 5 · CH 12</div>
+    <h1>对账系统设计</h1>
+    <p class="lede">对账是支付系统的「免疫系统」：交易、清算、结算三本账每天核对一遍，不平就报警。没有对账的支付系统等于闭着眼睛开车。</p>
+    <span class="part-tag">第五篇 · 中台工程</span>
+  </div>
+
+  <h2>12.1 对账解决什么问题</h2>
+  <p>分布式系统必然出现状态不一致（掉单、回调丢失、日切边界）。对账的目的是<strong>事后兜底</strong>：只要钱和账最终能核对上，系统就是最终一致的。</p>
+  <div class="fig-wrap">
+    <!--FIG:f12_recon_flow-->
+    <div class="fig-cap"><b>图 12-1 · T+1 对账全流程</b>三本账（我的/渠道的/银行的）两两核对，产出四种差错类型，每类有对应修复动作。</div>
+  </div>
+
+  <h2>12.2 涉及的文件与表</h2>
+  <table>
+    <colgroup><col style="width:26%"><col style="width:44%"><col style="width:30%"></colgroup>
+    <tr><th>数据</th><th>内容</th><th>来源</th></tr>
+    <tr><td>渠道交易账单</td><td>每笔成功交易的明细（含手续费）</td><td>微信/支付宝 T+1 下载</td></tr>
+    <tr><td>渠道资金账单</td><td>清算到账金额（净额）</td><td>同上</td></tr>
+    <tr><td>支付流水表</td><td>我方记录的所有支付单</td><td>自有数据库</td></tr>
+    <tr><td>对账结果表</td><td>matched / 长款 / 短款 / 金额不平</td><td>对账系统产出</td></tr>
+  </table>
+
+  <h2>12.3 差错处理</h2>
+  <ul>
+    <li><strong>短款（我有渠道没）：</strong>先补偿查单 —— 大概率渠道实际失败，我方误记成功；若确认失败，关闭支付单并回滚业务（不发货）。</li>
+    <li><strong>长款（渠道有我没有）：</strong>我方落库失败但钱已扣 —— 人工/自动补单，触发业务补偿（补发货）。</li>
+    <li><strong>金额不平：</strong>重点核对手续费与优惠拆分 —— 常见原因是把「渠道补贴」算进了商户金额。</li>
+  </ul>
+  <div class="callout ok">
+    <span class="t">对账的成熟度分级</span>
+    L1 手工 Excel 核对 → L2 T+1 自动对账 + 差错工单 → L3 准实时对账（分钟级）+ 自动差错修复 → L4 资损前置校验（交易时就拦截不平交易）。国内大平台普遍在 L3~L4。
+  </div>
+
+  <div class="ch-nav">
+    <a href="#ch-11" onclick="goChapter('ch-11')">← 第 11 章</a>
+    <a href="#ch-13" onclick="goChapter('ch-13')">第 13 章 · 分布式事务与幂等 →</a>
+  </div>
+</section>

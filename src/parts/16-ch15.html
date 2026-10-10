@@ -1,0 +1,39 @@
+<!-- meta: id=ch-15 | grp=第六篇 · 跨境与风控 | label=第15章 · 跨境支付 -->
+<section class="chapter" id="ch-15">
+  <div class="ch-head">
+    <div class="ch-num">PART 6 · CH 15</div>
+    <h1>跨境支付</h1>
+    <p class="lede">出境之后，没有网联和银联，取而代之的是卡组织（Visa/Mastercard）和 SWIFT 网络。规则也变了：用户手握「拒付」这项权利，风险结构完全不同。</p>
+    <span class="part-tag">第六篇 · 跨境与风控</span>
+  </div>
+
+  <h2>15.1 跨境收付的形态</h2>
+  <ul>
+    <li><strong>入境（外卡收单）：</strong>外国用户用 Visa 买中国商家的货 —— 接入外卡收单机构（如银联国际、Adyen、Stripe）。</li>
+    <li><strong>出境（出口收款）：</strong>中国商家在亚马逊卖货，用连连/PingPong 把美元结回人民币。</li>
+    <li><strong>汇款类：</strong>留学缴费、跨境转账 —— 走 SWIFT 或专有网络。</li>
+  </ul>
+
+  <h2>15.2 外卡交易的四步模型</h2>
+  <p>与国内最大的不同：<strong>授权（Auth）与请款（Capture）分离</strong>。国内微信支付是「下单即扣款」，外卡是「先冻结额度，发货后再请款」—— 天然的担保属性。</p>
+  <table>
+    <colgroup><col style="width:18%"><col style="width:42%"><col style="width:40%"></colgroup>
+    <tr><th>步骤</th><th>动作</th><th>说明</th></tr>
+    <tr><td><b>① Auth</b></td><td>授权：验证卡片有效性，冻结额度</td><td>不扣款，仅占用额度</td></tr>
+    <tr><td><b>② Capture</b></td><td>请款：真正发起扣款</td><td>通常发货时；Auth 有效期约 7 天</td></tr>
+    <tr><td><b>③ Settlement</b></td><td>结算：经卡组织清结算到商户账户</td><td>T+2 ~ T+7 不等</td></tr>
+    <tr><td><b>④ Chargeback</b></td><td>拒付：持卡人向发卡行申诉</td><td>风险由商户承担，有申诉期</td></tr>
+  </table>
+
+  <h2>15.3 3DS2 与拒付</h2>
+  <p><strong>3DS2（EMV 3-D Secure 2）</strong>是发卡行参与的二次验证（短信/银行 App 确认）。通过 3DS 的交易，拒付责任转移给发卡行 —— 这是外卡风控最重要的手段。</p>
+  <div class="callout risk">
+    <span class="t">拒付（Chargeback）是国内没有的风险</span>
+    持卡人可以对 120 天内的交易发起拒付（理由：未收到货/货不对板/盗刷）。拒付成立则强制退款 + 收罚金（$15~$100）。拒付率超过 1% 会被卡组织处罚甚至终止收单资格 —— 所以跨境电商的风控核心就是「降拒付率」。
+  </div>
+
+  <div class="ch-nav">
+    <a href="#ch-14" onclick="goChapter('ch-14')">← 第 14 章</a>
+    <a href="#ch-16" onclick="goChapter('ch-16')">第 16 章 · 风控体系 →</a>
+  </div>
+</section>

@@ -1,0 +1,45 @@
+<!-- meta: id=ch-14 | grp=第五篇 · 中台工程 | label=第14章 · 支付中台架构与领域建模 -->
+<section class="chapter" id="ch-14">
+  <div class="ch-head">
+    <div class="ch-num">PART 5 · CH 14</div>
+    <h1>支付中台架构与领域建模</h1>
+    <p class="lede">把前面所有知识组装成一个系统：分层架构、核心表结构、状态机。这一章是全书工程能力的总装车间。</p>
+    <span class="part-tag">第五篇 · 中台工程</span>
+  </div>
+
+  <h2>14.1 分层架构</h2>
+  <div class="fig-wrap">
+    <!--FIG:f14_arch-->
+    <div class="fig-cap"><b>图 14-1 · 支付中台五层架构</b>业务层只认「支付单」，渠道层只认「适配」，账务层只认「复式记账」—— 层与层之间靠状态机与事件驱动。</div>
+  </div>
+
+  <h2>14.2 核心表结构（担保交易）</h2>
+  <table>
+    <colgroup><col style="width:22%"><col style="width:48%"><col style="width:30%"></colgroup>
+    <tr><th>表</th><th>关键字段</th><th>要点</th></tr>
+    <tr><td><code>pay_order</code></td><td>out_trade_no(PK), amount, paid_amount, subsidy_amount, status, channel, payer_id, mch_id</td><td>金额拆字段：总额/实付/补贴（FAQ 的坑就在这）</td></tr>
+    <tr><td><code>pay_refund</code></td><td>out_refund_no(PK), order_no, refund_amount, status, reason</td><td>幂等键 + 累计校验</td></tr>
+    <tr><td><code>pay_profit_share</code></td><td>out_order_no(PK), order_no, receivers(JSON), shared_amount, status</td><td>receivers 记录每一方的分账明细</td></tr>
+    <tr><td><code>pay_profit_share_return</code></td><td>return_no(PK), share_order_no, return_amount, status</td><td>回退不能超出已分账</td></tr>
+    <tr><td><code>account_flow</code></td><td>flow_no(PK), account_id, direction, amount, biz_type, biz_no</td><td>复式记账：每笔业务产生成对的借贷流水</td></tr>
+  </table>
+
+  <h2>14.3 支付单状态机</h2>
+  <div class="fig-wrap">
+    <!--FIG:f14_state_machine-->
+    <div class="fig-cap"><b>图 14-2 · 支付单状态机</b>只许正向流转，终态以查单为准。状态每变一次，账务系统同步记账。</div>
+  </div>
+
+  <h2>14.4 高可用要点</h2>
+  <ul>
+    <li><strong>渠道多活：</strong>微信挂了自动切支付宝（收银台降级）；</li>
+    <li><strong>回调解耦：</strong>回调先落 MQ 再处理，处理失败可重放；</li>
+    <li><strong>查询降级：</strong>渠道查单接口限流，超出走本地状态 + 延迟重试；</li>
+    <li><strong>资损熔断：</strong>出款接口异常率超阈值自动熔断，宁可慢不可错。</li>
+  </ul>
+
+  <div class="ch-nav">
+    <a href="#ch-13" onclick="goChapter('ch-13')">← 第 13 章</a>
+    <a href="#ch-15" onclick="goChapter('ch-15')">第 15 章 · 跨境支付 →</a>
+  </div>
+</section>

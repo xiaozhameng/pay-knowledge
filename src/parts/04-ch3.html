@@ -1,0 +1,57 @@
+<!-- meta: id=ch-03 | grp=第一篇 · 基础与监管 | label=第3章 · 监管合规：备付金·断直连·反洗钱 -->
+<section class="chapter" id="ch-03">
+  <div class="ch-head">
+    <div class="ch-num">PART 1 · CH 3</div>
+    <h1>监管合规：备付金 · 断直连 · 反洗钱</h1>
+    <p class="lede">这一章解释三个「反直觉但必须如此」的制度。理解它们，你才能理解支付系统为什么长这样 —— 很多设计不是技术选择，是监管约束。</p>
+    <span class="part-tag">第一篇 · 基础与监管</span>
+  </div>
+
+  <h2>3.1 客户备付金：谁的钱、谁来管</h2>
+  <p class="term"><span class="w">定义</span><span class="d"><strong>备付金 = 用户已经付了、但商户还没拿走的钱。</strong>例：你在淘宝付了 59 元还没确认收货，这 59 元就是备付金。2019 年 1 月 14 日起，备付金 100% 集中缴存央行，支付机构动不了它。</span></p>
+  <div class="fig-wrap">
+    <!--FIG:b3_reserve-->
+    <div class="fig-cap"><b>图 3-1 · 备付金的演变与三个易混词</b>备付金账户（央行）/ 商户号余额（微信账本）/ 平台自有资金 —— 三个东西，法律性质完全不同。</div>
+  </div>
+  <div class="example">
+    <span class="t">例 · 房产中介的托管款</span>
+    <p>买房时你把首付交给中介托管，过户完成才转给卖家 —— 这笔钱在托管期间<strong>不是中介的钱</strong>。备付金同理：微信只是「支付行业的中介」，你付款到确认收货之间的钱，锁在央行这个「公证处」里。</p>
+  </div>
+
+  <h2>3.2 断直连：支付机构不能再直连银行</h2>
+  <div class="fig-wrap">
+    <!--FIG:b3_duanyilian-->
+    <div class="fig-cap"><b>图 3-2 · 断直连前后拓扑</b>2018 年 6 月完成后，所有支付机构与银行间的交易必须经网联（线上）或银联（卡）转接 —— 央行由此看清每一笔钱。</div>
+  </div>
+  <div class="qa">
+    <div class="q"><span class="mark">Q</span>网联只对接支付机构吗？平台（抖音/美团）会对接网联吗？</div>
+    <div class="a">
+      <p><strong>网联的接入方是持牌支付机构（和部分银行）。</strong>平台不是清算参与方，不直接对接网联 —— 平台的支付请求永远先到支付机构，由支付机构转给网联。</p>
+      <p>例外：银行自己的线上收单（如招行 App 内支付）可以直连银联，但那不是「平台」角色。记住链路：<strong>平台 → 支付机构 → 网联/银联 → 银行 → 央行</strong>，平台永远不跨过支付机构。</p>
+    </div>
+  </div>
+
+  <h2>3.3 反洗钱（AML）与 KYC</h2>
+  <p class="term"><span class="w">KYC</span><span class="d">Know Your Customer —— 支付机构必须核实「谁在用这个账户」。个人：身份证+人脸；企业：营业执照+对公账户打款验证。</span></p>
+  <div class="fig-wrap">
+    <!--FIG:b3_aml-->
+    <div class="fig-cap"><b>图 3-3 · KYC 三道筛查</b>身份核验、风险评估、名单筛查并行；任何一道不过都触发受限或上报。</div>
+  </div>
+  <div class="example">
+    <span class="t">例 · 为什么新注册的商户号不能立刻大额收款</span>
+    <p>你刚办的小超市接了微信收款，第一天就想收 50 万 —— 系统会触发风控。因为「新商户 + 大额 + 现金类行业」是洗钱的典型特征（把钱洗成「货款」）。所以商户号有<strong>阶梯限额</strong>：交易流水积累越多、资质越全，额度越高。</p>
+  </div>
+
+  <h2>3.4 其他关键合规约束</h2>
+  <ul>
+    <li><strong>特约商户实名制：</strong>商户入驻必须 KYC，平台代收也要「穿透」到实际收款人。</li>
+    <li><strong>跨境支付持牌：</strong>跨境外汇支付需要额外资质（支付机构跨境外币支付牌照）。</li>
+    <li><strong>数据本地化：</strong>支付数据境内存储，出境需安全评估。</li>
+    <li><strong>反欺诈联动：</strong>可疑交易要上报反洗钱监测中心。</li>
+  </ul>
+
+  <div class="ch-nav">
+    <a href="#ch-02" onclick="goChapter('ch-02')">← 第 2 章</a>
+    <a href="#ch-04" onclick="goChapter('ch-04')">第 4 章 · 清算·结算·轧差 →</a>
+  </div>
+</section>

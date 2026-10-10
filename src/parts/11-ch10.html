@@ -1,0 +1,42 @@
+<!-- meta: id=ch-10 | grp=第四篇 · 交易核心 | label=第10章 · 退款体系 -->
+<section class="chapter" id="ch-10">
+  <div class="ch-head">
+    <div class="ch-num">PART 4 · CH 10</div>
+    <h1>退款体系</h1>
+    <p class="lede">退款比收款难十倍：钱已经分散到多个账户、可能已提现、可能隔着渠道清算。这一章讲原路退回的机制，以及「分账之后怎么退」这个大难题。</p>
+    <span class="part-tag">第四篇 · 交易核心</span>
+  </div>
+
+  <h2>10.1 退款的基本模型</h2>
+  <p class="term"><span class="w">原路退回</span><span class="d">钱按原支付路径逆向走一遍：零钱付的退零钱（秒到）、银行卡付的退银行卡（T+1~3）、信用卡付的退信用卡（可能以负账单形式出现）。</span></p>
+  <div class="fig-wrap">
+    <!--FIG:e10_refund_seq-->
+    <div class="fig-cap"><b>图 10-1 · 退款时序</b>「受理成功 ≠ 到账」—— 微信返回 PROCESSING 时钱还在路上，终态靠回调+查单。</div>
+  </div>
+
+  <h2>10.2 退款状态机</h2>
+  <p>退款单状态：<code>PROCESSING（处理中）→ SUCCESS（成功）/ FAIL（失败）/ ABNORMAL（异常）</code>。FAIL 的常见原因是商户余额不足（退款从商户可用余额出）—— 需要商户充值后重试或走垫资。</p>
+
+  <h2>10.3 分账完成后的退款（电商最头疼）</h2>
+  <div class="fig-wrap">
+    <!--FIG:e10_refund_after_share-->
+    <div class="fig-cap"><b>图 10-2 · 分账后退款的两条路径</b>实践通常是 B 路径保体验 + A 路径追偿并行。</div>
+  </div>
+  <div class="example">
+    <span class="t">例 · 商家已提现怎么退</span>
+    <p>小赵退货，商家 52.1 元已提现到对公卡。平台发起「分账回退」失败（余额不足）。大平台的兜底方案：① 平台自有资金先退给小赵；② 对商家发起「欠款账户」扣款：下一笔结算款先扣 52.1 元；③ 若商家再无流水，走法务/保证金。这就是为什么平台都要收<strong>保证金</strong> —— 保证金就是为这种时刻准备的。</p>
+  </div>
+
+  <h2>10.4 退款异常与资损</h2>
+  <ul>
+    <li><strong>重复退款：</strong>幂等键 out_refund_no + 状态机防重；</li>
+    <li><strong>超退：</strong>退款累计额 > 实付额，渠道直接拒绝 —— 系统侧要预校验；</li>
+    <li><strong>退款渠道不一致：</strong>微信付的走支付宝退 —— 不可能，原路退回是强约束；</li>
+    <li><strong>补贴部分误退：</strong>把平台红包也退给了用户 → 资损。字段必须拆分（见 FAQ）。</li>
+  </ul>
+
+  <div class="ch-nav">
+    <a href="#ch-09" onclick="goChapter('ch-09')">← 第 9 章</a>
+    <a href="#ch-11" onclick="goChapter('ch-11')">第 11 章 · 分账与分账回退 →</a>
+  </div>
+</section>

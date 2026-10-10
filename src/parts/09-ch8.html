@@ -1,0 +1,30 @@
+<!-- meta: id=ch-08 | grp=第三篇 · 渠道详解 | label=第8章 · 银联·数字人民币·网联 -->
+<section class="chapter" id="ch-08">
+  <div class="ch-head">
+    <div class="ch-num">PART 3 · CH 8</div>
+    <h1>银联 · 数字人民币 · 网联</h1>
+    <p class="lede">除了微信和支付宝，还有三个「国家队」角色。一张图分清谁管哪一段。</p>
+    <span class="part-tag">第三篇 · 渠道详解</span>
+  </div>
+
+  <h2>8.1 四个角色的定位</h2>
+  <div class="fig-wrap">
+    <!--FIG:d8_position-->
+    <div class="fig-cap"><b>图 8-1 · 央行 / 网联 / 银联 / 支付机构的分工</b>口诀：央行管规则和最终划钱，网联管线上转接，银联管卡片转接，支付机构管把用户和商户接进来。</div>
+  </div>
+  <div class="example">
+    <span class="t">例 · 超市刷 POS 走谁</span>
+    <p>你在超市刷银行卡：POS 是收单机构（可能是银联商务/拉卡拉）的，交易经<strong>银联</strong>转接到发卡行 —— 这条链路完全没微信什么事。而便利店「扫码」如果扫的是微信收款码，则走微信 → 网联。<strong>同为线下场景，走哪条清算通道取决于「谁的品牌码」。</strong></p>
+  </div>
+
+  <h2>8.2 数字人民币（e-CNY）</h2>
+  <p>数字人民币是央行发行的<strong>数字现金</strong>，与微信零钱的本质区别：零钱是「微信欠你的记账」（负债在微信），数币是「央行的负债」（M0 替代，等同于现金）。用户通过「运营机构」（六大行 + 微信/支付宝等）开立数币钱包。对商户来说，接数币 = 多接一条渠道，中台的渠道子系统又要多适配一个协议。</p>
+
+  <h2>8.3 网联：支付机构视角的清算中枢</h2>
+  <p>支付机构 × 网联的日常交互只有两类报文：<strong>交易转接报文</strong>（实时，转发每笔支付）和<strong>清算对账文件</strong>（T+1，供轧差核对）。平台无法直接接入网联（见第 3 章 FAQ）。</p>
+
+  <div class="ch-nav">
+    <a href="#ch-07" onclick="goChapter('ch-07')">← 第 7 章</a>
+    <a href="#ch-09" onclick="goChapter('ch-09')">第 9 章 · 担保交易全链路 →</a>
+  </div>
+</section>
