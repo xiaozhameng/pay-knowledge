@@ -13,13 +13,14 @@ import json
 import os
 import subprocess
 import sys
+import time
 import urllib.request
 
 REPO = "xiaozhameng/pay-knowledge"
 BRANCH = "main"
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-INCLUDE_DIRS = ["src", "tools"]
+INCLUDE_DIRS = ["src", "tools", "assets"]
 INCLUDE_FILES = ["index.html", "README.md", ".gitignore"]
 EXCLUDE_PARTS = ("/_preview/", "/_smoke/", "_shots/", ".DS_Store")
 
@@ -37,22 +38,31 @@ class Api:
         self.tok = tok
         self.n = 0
 
-    def req(self, method, path, payload=None):
+    def req(self, method, path, payload=None, retries=3):
         self.n += 1
         url = "https://api.github.com/repos/%s/%s" % (REPO, path)
         data = json.dumps(payload).encode() if payload is not None else None
-        r = urllib.request.Request(url, data=data, method=method)
-        r.add_header("Authorization", "Bearer %s" % self.tok)
-        r.add_header("Accept", "application/vnd.github+json")
-        r.add_header("User-Agent", "pay-knowledge-pusher")
-        try:
-            with urllib.request.urlopen(r, timeout=60) as resp:
-                body = resp.read().decode()
-                return json.loads(body) if body else {}
-        except urllib.error.HTTPError as e:
-            print("HTTP %s on %s %s" % (e.code, method, path))
-            print(e.read().decode()[:800])
-            raise
+        last = None
+        for attempt in range(1, retries + 1):
+            r = urllib.request.Request(url, data=data, method=method)
+            r.add_header("Authorization", "Bearer %s" % self.tok)
+            r.add_header("Accept", "application/vnd.github+json")
+            r.add_header("User-Agent", "pay-knowledge-pusher")
+            try:
+                with urllib.request.urlopen(r, timeout=60) as resp:
+                    body = resp.read().decode()
+                    return json.loads(body) if body else {}
+            except urllib.error.HTTPError as e:
+                print("HTTP %s on %s %s" % (e.code, method, path))
+                print(e.read().decode()[:800])
+                raise
+            except (urllib.error.URLError, OSError, TimeoutError) as e:
+                # 网络抖动（SSL 握手超时等）：等待后重试
+                last = e
+                print("网络异常(%d/%d) %s %s: %s，5s 后重试…"
+                      % (attempt, retries, method, path, e))
+                time.sleep(5)
+        raise last
 
 
 def collect_files():

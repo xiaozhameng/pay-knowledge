@@ -380,11 +380,29 @@ class Sequence:
         # 先算 y
         y = self.top
         laid = []
+        first_msg = True
         for it in self.items:
             if it["t"] == "msg":
                 need = self.msg_h
                 if it["tag"]:
                     need += 14
+                # 消息标签向上折行时，最高行可能压进上方元素（顶部参与者盒 /
+                # note 警示框）。按实际行数把该消息往下推，保证不压。
+                if it["a"] != it["b"] and it.get("side", "above") == "above":
+                    x1, x2 = self.cx[it["a"]], self.cx[it["b"]]
+                    maxw = max(abs(x2 - x1) - 14, 96)
+                    rows = wrap(it["text"], it["fs"], maxw)
+                    label_top = (y + self.msg_h / 2.0) - 7 \
+                        - (len(rows) - 1) * it["fs"] * 1.45 - it["fs"] * 0.92
+                    if first_msg:
+                        floor = y - 6 + 2        # 顶部参与者盒下缘 + 2px 缓冲
+                    elif laid and laid[-1]["t"] == "note":
+                        floor = laid[-1]["y"] + laid[-1]["h"] + 4  # 上方警示框下缘
+                    else:
+                        floor = None
+                    if floor is not None and label_top < floor:
+                        y += floor - label_top
+                    first_msg = False
                 laid.append(dict(it, y=y))
                 y += need
             elif it["t"] == "self":
@@ -393,8 +411,14 @@ class Sequence:
                 laid.append(dict(it, y=y, rows=rows, h=h))
                 y += h
             elif it["t"] == "note":
-                laid.append(dict(it, y=y + 8))
-                y += it["h"] + 18
+                # 布局高度必须与渲染高度一致：渲染时按「盒宽-22」重新折行，
+                # 行数可能比这里预估的多，导致盒子比布局预期的高、压到下方。
+                nx1, nx2 = self.cx[it["a"]], self.cx[it["b"]]
+                nw = abs(nx2 - nx1) + 36
+                nrows = wrap(it["text"], it["fs"], nw - 22)
+                nh = max(it["h"], len(nrows) * it["fs"] * 1.6 + 16)
+                laid.append(dict(it, y=y + 8, h=nh))
+                y += nh + 18
             elif it["t"] == "gap":
                 laid.append(dict(it, y=y))
                 y += it["h"]

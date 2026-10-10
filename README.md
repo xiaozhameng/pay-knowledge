@@ -7,6 +7,18 @@
 
 > 目标：读完能看懂国内支付全貌，并具备成为支付高级架构师的知识骨架。
 
+## 预览
+
+![支付通识 · 封面（左侧为全书目录，点击可跳章）](assets/cover.png)
+
+| 阅读界面：目录 + 正文 + 图表 | 四个易混词，一张图讲透 |
+|---|---|
+| ![阅读界面](assets/content.png) | ![清算/结算/轧差/划拨](assets/fourwords.png) |
+| **系统调用关系全景图**（第 0 章） | **微信支付 V3 完整时序**（网联 ↔ 发卡行零省略） |
+| ![系统调用关系全景图](assets/sysmap.png) | ![微信 V3 时序](assets/seq.png) |
+| **支付中台五层架构**（第 14 章） | **优惠券的结算与对账口径**（FAQ 深度专题） |
+| ![支付中台架构](assets/arch.png) | ![优惠券口径](assets/coupon.png) |
+
 ## 直接阅读
 
 打开 `index.html` 即可，无需任何依赖；左侧目录可跳章，也支持
@@ -28,6 +40,7 @@
 ```
 pay-knowledge/
 ├── index.html          ← 成品电子书（单文件，直接打开）
+├── assets/             ← README 预览截图（由 tools/shots.mjs 生成）
 ├── src/
 │   ├── template.html   ← HTML 骨架：样式 + 目录/切章交互
 │   ├── cover.html      ← 封面
@@ -37,6 +50,7 @@ pay-knowledge/
     ├── figs.py         ← 全书 44 张图的定义（每图一个函数）
     ├── build.py        ← 构建脚本：parts + figs → index.html
     ├── preview.py      ← 把任意几张图渲染成单页，便于截图巡检
+    ├── shots.mjs       ← 用无头 Chrome + CDP 给 README 生成预览截图
     └── smoke_test.py   ← svgkit 冒烟测试
 ```
 
@@ -54,6 +68,9 @@ cd tools && python3 build.py
 
 **巡检图表**：`python3 tools/preview.py 图名1 图名2 …` 会把指定图渲染成
 `tools/_preview/index.html`，浏览器打开截图即可检查排版。
+
+**重新生成 README 截图**：`node tools/shots.mjs`（需要本机装有 Google Chrome），
+输出到 `tools/_shots/`，缩放后拷入 `assets/`。
 
 ## 全书结构（8 篇 24 章）
 
